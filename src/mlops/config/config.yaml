@@ -1,0 +1,21 @@
+common:
+  artifact_dir: "artifacts"
+  seed: 42
+
+data_ingestion:
+  data_ingestion_dir: "data_ingestion"
+  data_path: "data"
+  raw_data_dir: "raw_data"
+  raw_data_path: raw.csv
+  ingested_data_dir: "ingested"
+  train_file_path: train.csv
+  test_file_path: test.csv
+  train_test_split_ratio: 0.2
+
+data_validation:
+
+data_transformation:
+
+model_training:
+
+model_evaluation:

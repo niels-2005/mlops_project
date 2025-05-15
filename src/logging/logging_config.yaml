@@ -1,0 +1,22 @@
+version: 1
+
+formatters:
+  default:
+    format: "[%(asctime)s] [%(levelname)s] %(filename)s:%(lineno)d in %(funcName)s() - %(message)s"
+
+handlers:
+  file_handler:
+    class: logging.FileHandler
+    level: INFO
+    formatter: default
+    filename: "REPLACE_ME.log"
+
+loggers:
+  ml_logger:
+    level: INFO
+    handlers: [file_handler]
+    propagate: no
+
+root:
+  level: WARNING
+  handlers: [file_handler]
