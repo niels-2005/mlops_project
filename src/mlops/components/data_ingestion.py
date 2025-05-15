@@ -1,8 +1,9 @@
-from src.mlops.config.data_ingestion_config import DataIngestionConfig
-from src.mlops.utils.common_utils import create_directory
-from src.logging.get_logger import get_logger
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
+from src.logger.get_logger import get_logger
+from src.mlops.config.data_ingestion_config import DataIngestionConfig
+from src.mlops.utils.common_utils import create_directory
 
 logger = get_logger()
 
@@ -48,7 +49,7 @@ class DataIngestion:
             return df
         except Exception as e:
             logger.error(f"Error while loading file {self.config.data_path}: {e}")
-            raise
+            raise e
 
     def run_data_ingestion(self):
         logger.info("Data Ingestion started.")

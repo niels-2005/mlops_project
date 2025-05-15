@@ -2,12 +2,13 @@ import logging
 import logging.config
 import os
 from datetime import datetime
-from src.mlops.utils.common_utils import read_yaml_file
+
+import yaml
 
 _logger = None
 
 
-def get_logger(name="ml_logger", config_path="src/logging/logging_config.yaml"):
+def get_logger(name="ml_logger", config_path="src/logger/logging_config.yaml"):
     global _logger
 
     if _logger is None:
@@ -17,7 +18,8 @@ def get_logger(name="ml_logger", config_path="src/logging/logging_config.yaml"):
         os.makedirs(logs_dir, exist_ok=True)
         log_file_path = os.path.join(logs_dir, f"{log_folder}.log")
 
-        config = read_yaml_file(config_path)
+        with open(config_path, "r") as f:
+            config = yaml.safe_load(f)
 
         # replace log file
         config["handlers"]["file_handler"]["filename"] = log_file_path

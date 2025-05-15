@@ -1,6 +1,8 @@
-from src.logging.get_logger import get_logger
-import yaml
 import os
+
+import yaml
+
+from src.logger.get_logger import get_logger
 
 logger = get_logger()
 
