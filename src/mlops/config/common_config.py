@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from src.mlops.utils.common_utils import (create_directory, get_os_path,
-                                          read_yaml_file)
+from mlops.utils.common_utils import get_os_path, read_yaml_file
 
 
 class CommonConfig:

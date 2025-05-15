@@ -1,5 +1,5 @@
 common:
-  artifact_dir: "artifacts"
+  artifact_dir: "mlops_artifacts"
   seed: 42
 
 data_ingestion:
@@ -13,6 +13,16 @@ data_ingestion:
   train_test_split_ratio: 0.2
 
 data_validation:
+  data_validation_dir: "data_validation"
+  schema_path: "src/mlops/schemas/data_validation_schema.yaml"
+  is_validated_train_path: "data_validation_train.yaml"
+  is_validated_test_path: "data_validation_test.yaml"
+  validated_data_dir: "validated_data"
+  invalidated_data_dir: "invalidated_data"
+  valid_train_path: "validated_train.csv"
+  valid_test_path: "validated_test.csv"
+  invalid_train_path: "invalidated_train.csv"
+  invalid_test_path: "invalidated_test.csv"
 
 data_transformation:
 
