@@ -1,10 +1,9 @@
 from mlops.components.data_ingestion import DataIngestion
-from mlops.components.data_validation import DataValidation
 from mlops.components.data_transformation import DataTransformation
+from mlops.components.data_validation import DataValidation
 from mlops.config.data_ingestion_config import DataIngestionConfig
-from mlops.config.data_validation_config import DataValidationConfig
 from mlops.config.data_transformation_config import DataTransformationConfig
-
+from mlops.config.data_validation_config import DataValidationConfig
 from src.logger.get_logger import get_logger
 
 logger = get_logger()

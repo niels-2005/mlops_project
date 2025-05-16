@@ -1,5 +1,6 @@
-from .common_config import CommonConfig
 from mlops.utils.common_utils import get_os_path
+
+from .common_config import CommonConfig
 
 
 class DataTransformationConfig(CommonConfig):

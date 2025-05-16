@@ -1,11 +1,10 @@
 import os
 
+import joblib
 import pandas as pd
 import yaml
 
 from src.logger.get_logger import get_logger
-
-import joblib
 
 logger = get_logger()
 
