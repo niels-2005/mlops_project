@@ -7,7 +7,7 @@ data_ingestion:
   data_path: "data/heart.csv"
   raw_data_dir: "raw_data"
   raw_data_path: raw.csv
-  ingested_data_dir: "ingested"
+  ingested_data_dir: "ingested_data"
   train_file_path: train.csv
   test_file_path: test.csv
   train_test_split_ratio: 0.2
@@ -25,6 +25,13 @@ data_validation:
   invalid_test_path: "invalidated_test.csv"
 
 data_transformation:
+  data_transformation_dir: "data_transformation"
+  schema_path: "src/mlops/schemas/data_transformation_schema.yaml"
+  preprocessor_objects_dir: "preprocessor_objects"
+  standard_scaler_path: "standard_scaler.pkl"
+  transformed_data_dir: "transformed_data"
+  transformed_train_path: "transformed_train.csv"
+  transformed_test_path: "transformed_test.csv"
 
 model_training:
 

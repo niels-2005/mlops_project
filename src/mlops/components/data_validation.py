@@ -3,9 +3,13 @@ import pandas as pd
 from mlops.artifacts.data_ingestion_artifact import DataIngestionArtifact
 from mlops.artifacts.data_validation_artifact import DataValidationArtifact
 from mlops.config.data_validation_config import DataValidationConfig
-from mlops.utils.common_utils import (create_directory, read_dataset,
-                                      read_yaml_file, save_file_as_csv,
-                                      write_yaml_file)
+from mlops.utils.common_utils import (
+    create_directory,
+    read_dataset,
+    read_yaml_file,
+    save_file_as_csv,
+    write_yaml_file,
+)
 from src.logger.get_logger import get_logger
 
 logger = get_logger()
@@ -29,7 +33,7 @@ class DataValidation:
         }
         self.validation_status = True
 
-    def validate_number_of_columns(self, df: pd.DataFrame):
+    def validate_number_of_columns(self, df: pd.DataFrame) -> None:
         try:
             logger.info("Validating the Length of Columns in DataFrame.")
             if len(df.columns) != self.len_original_columns:
@@ -80,7 +84,7 @@ class DataValidation:
             logger.error(f"Error while generating validation report: {e}")
             raise e
 
-    def run_data_validation(self):
+    def run_data_validation(self) -> DataValidationArtifact:
         logger.info("Data Validation started.")
         train_df = read_dataset(self.data_ingestion_artifact.train_file_path)
         test_df = read_dataset(self.data_ingestion_artifact.test_file_path)

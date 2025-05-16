@@ -5,6 +5,8 @@ import yaml
 
 from src.logger.get_logger import get_logger
 
+import joblib
+
 logger = get_logger()
 
 
@@ -56,4 +58,24 @@ def save_file_as_csv(df: pd.DataFrame, file_path: str) -> None:
         logger.info(f"csv saved at: {file_path}")
     except Exception as e:
         logger.error(f"Error while saving csv {file_path}: {e} ")
+        raise e
+
+
+def save_object(object, file_path: str):
+    try:
+        logger.info(f"Saving Object to: {file_path}")
+        with open(file_path, "wb") as file:
+            joblib.dump(object, file)
+    except Exception as e:
+        logger.error(f"Error while saving Object to: {file_path}")
+        raise e
+
+
+def load_object(file_path: str):
+    try:
+        logger.info(f"Loading Object from: {file_path}")
+        with open(file_path, "rb") as file:
+            return joblib.load(file)
+    except Exception as e:
+        logger.error(f"Error while loading Object from: {file_path}")
         raise e
