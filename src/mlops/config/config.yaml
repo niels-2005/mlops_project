@@ -39,8 +39,10 @@ model_training:
   logistic_regression_dir: "logistic_regression"
   random_forest_dir: "random_forest"
   xgboost_dir: "xgboost"
+  best_pipeline_path: "best_pipeline.pkl"
   best_model_path: "best_model.pkl"
   tuning_summary_path: "tuning_summary.yaml"
   feature_selector_path: "feature_selector.pkl"
+  target_feature: "target"
 
 model_evaluation:
