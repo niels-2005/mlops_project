@@ -1,22 +1,20 @@
-from mlops.artifacts.data_transformation_artifact import DataTransformationArtifact
-from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
-from mlops.config.model_training_config import ModelTrainingConfig
-from mlops.utils.common_utils import (
-    create_directory,
-    read_yaml_file,
-    read_dataset,
-    save_object,
-    write_yaml_file,
-    get_os_path,
-)
-from src.logger.get_logger import get_logger
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import (SelectKBest, f_classif,
+                                       mutual_info_classif)
 from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
-from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif
+from sklearn.metrics import fbeta_score, make_scorer, precision_score
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import precision_score, make_scorer, fbeta_score
+from xgboost import XGBClassifier
+
+from mlops.artifacts.data_transformation_artifact import \
+    DataTransformationArtifact
+from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
+from mlops.config.model_training_config import ModelTrainingConfig
+from mlops.utils.common_utils import (create_directory, get_os_path,
+                                      read_dataset, read_yaml_file,
+                                      save_object, write_yaml_file)
+from src.logger.get_logger import get_logger
 
 
 class ModelTraining:
