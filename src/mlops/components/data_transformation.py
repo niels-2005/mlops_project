@@ -10,8 +10,6 @@ from mlops.utils.common_utils import (create_directory, read_dataset,
                                       save_object)
 from src.logger.get_logger import get_logger
 
-logger = get_logger()
-
 
 class DataTransformation:
     def __init__(
@@ -21,6 +19,7 @@ class DataTransformation:
     ):
         self.data_validation_artifact = data_validation_artifact
         self.config = config
+        self.logger = get_logger()
         create_directory(self.config.data_transformation_dir)
         create_directory(self.config.preprocessors_dir)
         create_directory(self.config.transformed_data_dir)
@@ -32,13 +31,15 @@ class DataTransformation:
             original_length = len(df)
             df = df.dropna()
             without_null_length = len(df)
-            logger.info(
+            self.logger.info(
                 f"Dropping Null Values from {file_path}, Original Length: \
                 {original_length}, removed {original_length - without_null_length} Null Values."
             )
             return df
         except Exception as e:
-            logger.error(f"Error while dropping Null Values from: {file_path}: {e}")
+            self.logger.error(
+                f"Error while dropping Null Values from: {file_path}: {e}"
+            )
             raise e
 
     def drop_duplicates(self, df: pd.DataFrame, file_path: str) -> pd.DataFrame:
@@ -46,13 +47,13 @@ class DataTransformation:
             original_length = len(df)
             df = df.drop_duplicates()
             without_duplicates_length = len(df)
-            logger.info(
+            self.logger.info(
                 f"Dropping Duplicated Values from {file_path}, Original Length: \
                 {original_length}, removed {original_length - without_duplicates_length} Duplicated Values."
             )
             return df
         except Exception as e:
-            logger.error(
+            self.logger.error(
                 f"Error while dropping duplicated Values from: {file_path}: {e}"
             )
             raise e
@@ -66,14 +67,16 @@ class DataTransformation:
         labels: list[int],
     ) -> pd.DataFrame:
         try:
-            logger.info(
+            self.logger.info(
                 f"Performing Feature Binning for: {file_path}, Column: {column_name}"
             )
             binning = pd.cut(df[column_name], bins=bins, labels=labels)
             df[column_name] = binning
             return df
         except Exception as e:
-            logger.error(f"Error while performing Feature Binning for {file_path}: {e}")
+            self.logger.error(
+                f"Error while performing Feature Binning for {file_path}: {e}"
+            )
             raise e
 
     def perform_feature_scaling(
@@ -87,7 +90,7 @@ class DataTransformation:
     ) -> tuple[pd.DataFrame, pd.DataFrame]:
         try:
             scaler = StandardScaler()
-            logger.info(
+            self.logger.info(
                 f"Performing Standard Scaling for: {features}, on files: {train_file_path}, {test_file_path}"
             )
             df_train[features] = scaler.fit_transform(df_train[features])
@@ -95,13 +98,13 @@ class DataTransformation:
             save_object(scaler, scaler_save_path)
             return df_train, df_test
         except Exception as e:
-            logger.error(
+            self.logger.error(
                 f"Error while performing Data Scaling for: {train_file_path}, {test_file_path}: {e}"
             )
             raise e
 
     def run_data_transformation(self):
-        logger.info("Data Transformation started.")
+        self.logger.info("Data Transformation started.")
         train_df = read_dataset(self.data_validation_artifact.validated_train_path)
         test_df = read_dataset(self.data_validation_artifact.validated_test_path)
 
@@ -152,6 +155,6 @@ class DataTransformation:
         data_transformation_artifact = DataTransformationArtifact(
             self.config.transformed_train_path, self.config.transformed_test_path
         )
-        logger.info(f"Data Transformation returns: {data_transformation_artifact}")
-        logger.info("Data Transformation completed.")
+        self.logger.info(f"Data Transformation returns: {data_transformation_artifact}")
+        self.logger.info("Data Transformation completed.")
         return data_transformation_artifact

@@ -34,5 +34,13 @@ data_transformation:
   transformed_test_path: "transformed_test.csv"
 
 model_training:
+  model_training_dir: "model_training"
+  schema_path: "src/mlops/schemas/model_training_schema.yaml"
+  logistic_regression_dir: "logistic_regression"
+  random_forest_dir: "random_forest"
+  xgboost_dir: "xgboost"
+  best_model_path: "best_model.pkl"
+  tuning_summary_path: "tuning_summary.yaml"
+  feature_selector_path: "feature_selector.pkl"
 
 model_evaluation:
