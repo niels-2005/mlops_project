@@ -104,57 +104,63 @@ class DataTransformation:
             raise e
 
     def run_data_transformation(self):
-        self.logger.info("Data Transformation started.")
-        train_df = read_dataset(self.data_validation_artifact.validated_train_path)
-        test_df = read_dataset(self.data_validation_artifact.validated_test_path)
+        try:
+            self.logger.info("Data Transformation started.")
+            train_df = read_dataset(self.data_validation_artifact.validated_train_path)
+            test_df = read_dataset(self.data_validation_artifact.validated_test_path)
 
-        if self.schema["drop_null_values"]:
-            train_df = self.drop_null_values(
-                train_df, self.data_validation_artifact.validated_train_path
+            if self.schema["drop_null_values"]:
+                train_df = self.drop_null_values(
+                    train_df, self.data_validation_artifact.validated_train_path
+                )
+                test_df = self.drop_null_values(
+                    test_df, self.data_validation_artifact.validated_train_path
+                )
+
+            if self.schema["remove_duplicates"]:
+                train_df = self.drop_duplicates(
+                    train_df, self.data_validation_artifact.validated_train_path
+                )
+                test_df = self.drop_duplicates(
+                    test_df, self.data_validation_artifact.validated_test_path
+                )
+
+            train_df = self.perform_feature_binning(
+                train_df,
+                self.data_validation_artifact.validated_train_path,
+                self.feature_binning_schema["column"],
+                self.feature_binning_schema["bins"],
+                self.feature_binning_schema["labels"],
             )
-            test_df = self.drop_null_values(
-                test_df, self.data_validation_artifact.validated_train_path
+
+            test_df = self.perform_feature_binning(
+                test_df,
+                self.data_validation_artifact.validated_test_path,
+                self.feature_binning_schema["column"],
+                self.feature_binning_schema["bins"],
+                self.feature_binning_schema["labels"],
             )
 
-        if self.schema["remove_duplicates"]:
-            train_df = self.drop_duplicates(
-                train_df, self.data_validation_artifact.validated_train_path
+            train_df, test_df = self.perform_feature_scaling(
+                train_df,
+                test_df,
+                self.data_validation_artifact.validated_train_path,
+                self.data_validation_artifact.validated_test_path,
+                list(self.schema["columns_to_scale"]),
+                self.config.standard_scaler_path,
             )
-            test_df = self.drop_duplicates(
-                test_df, self.data_validation_artifact.validated_test_path
+
+            save_file_as_csv(train_df, self.config.transformed_train_path)
+            save_file_as_csv(test_df, self.config.transformed_test_path)
+
+            data_transformation_artifact = DataTransformationArtifact(
+                self.config.transformed_train_path, self.config.transformed_test_path
             )
-
-        train_df = self.perform_feature_binning(
-            train_df,
-            self.data_validation_artifact.validated_train_path,
-            self.feature_binning_schema["column"],
-            self.feature_binning_schema["bins"],
-            self.feature_binning_schema["labels"],
-        )
-
-        test_df = self.perform_feature_binning(
-            test_df,
-            self.data_validation_artifact.validated_test_path,
-            self.feature_binning_schema["column"],
-            self.feature_binning_schema["bins"],
-            self.feature_binning_schema["labels"],
-        )
-
-        train_df, test_df = self.perform_feature_scaling(
-            train_df,
-            test_df,
-            self.data_validation_artifact.validated_train_path,
-            self.data_validation_artifact.validated_test_path,
-            list(self.schema["columns_to_scale"]),
-            self.config.standard_scaler_path,
-        )
-
-        save_file_as_csv(train_df, self.config.transformed_train_path)
-        save_file_as_csv(test_df, self.config.transformed_test_path)
-
-        data_transformation_artifact = DataTransformationArtifact(
-            self.config.transformed_train_path, self.config.transformed_test_path
-        )
-        self.logger.info(f"Data Transformation returns: {data_transformation_artifact}")
-        self.logger.info("Data Transformation completed.")
-        return data_transformation_artifact
+            self.logger.info(
+                f"Data Transformation returns: {data_transformation_artifact}"
+            )
+            self.logger.info("Data Transformation completed.")
+            return data_transformation_artifact
+        except Exception as e:
+            self.logger.error(f"Error occurred during data transformation: {e}")
+            raise e

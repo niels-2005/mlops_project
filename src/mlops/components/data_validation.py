@@ -28,15 +28,6 @@ class DataValidation:
         }
         self.validation_status = True
 
-    def validate_number_of_columns(self, df: pd.DataFrame) -> None:
-        try:
-            self.logger.info("Validating the Length of Columns in DataFrame.")
-            if len(df.columns) != self.len_original_columns:
-                self.validation_status = False
-        except Exception as e:
-            self.logger.error(f"Error while validating number of columns: {e}")
-            raise e
-
     def generate_validation_report(self, df: pd.DataFrame, file_path: str) -> None:
         try:
             self.logger.info(f"Generating Validation Report for: {file_path}")
@@ -72,7 +63,6 @@ class DataValidation:
                 "columns": validation_results,
                 "validation_status": self.validation_status,
             }
-
             write_yaml_file(file_path, content)
 
         except Exception as e:
@@ -80,27 +70,30 @@ class DataValidation:
             raise e
 
     def run_data_validation(self) -> DataValidationArtifact:
-        self.logger.info("Data Validation started.")
-        train_df = read_dataset(self.data_ingestion_artifact.train_file_path)
-        test_df = read_dataset(self.data_ingestion_artifact.test_file_path)
+        try:
+            self.logger.info("Data Validation started.")
+            train_df = read_dataset(self.data_ingestion_artifact.train_file_path)
+            test_df = read_dataset(self.data_ingestion_artifact.test_file_path)
 
-        self.validate_number_of_columns(train_df)
-        self.validate_number_of_columns(test_df)
-
-        self.generate_validation_report(train_df, self.config.is_validated_train_path)
-        self.generate_validation_report(test_df, self.config.is_validated_test_path)
-
-        if self.validation_status == False:
-            save_file_as_csv(train_df, self.config.invalidated_train_path)
-            save_file_as_csv(test_df, self.config.invalidated_test_path)
-            self.logger.error(f"Data Validation failed, stopping Pipeline...")
-            raise ValueError("Data validation failed. Check the validation report.")
-        else:
-            save_file_as_csv(train_df, self.config.validated_train_path)
-            save_file_as_csv(test_df, self.config.validated_test_path)
-            data_validation_artifact = DataValidationArtifact(
-                self.config.validated_train_path, self.config.validated_test_path
+            self.generate_validation_report(
+                train_df, self.config.is_validated_train_path
             )
-            self.logger.info(f"Data Validation returns: {data_validation_artifact}")
-            self.logger.info("Data Validation completed.")
-            return data_validation_artifact
+            self.generate_validation_report(test_df, self.config.is_validated_test_path)
+
+            if self.validation_status == False:
+                save_file_as_csv(train_df, self.config.invalidated_train_path)
+                save_file_as_csv(test_df, self.config.invalidated_test_path)
+                self.logger.error(f"Data Validation failed, stopping Pipeline...")
+                raise ValueError("Data validation failed. Check the validation report.")
+            else:
+                save_file_as_csv(train_df, self.config.validated_train_path)
+                save_file_as_csv(test_df, self.config.validated_test_path)
+                data_validation_artifact = DataValidationArtifact(
+                    self.config.validated_train_path, self.config.validated_test_path
+                )
+                self.logger.info(f"Data Validation returns: {data_validation_artifact}")
+                self.logger.info("Data Validation completed.")
+                return data_validation_artifact
+        except Exception as e:
+            self.logger.error(f"Error occurred during data_validation: {e}")
+            raise e

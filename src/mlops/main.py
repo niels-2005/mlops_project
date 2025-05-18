@@ -31,7 +31,7 @@ def run_mlops_pipeline():
         model_training = ModelTraining(
             data_transformation_artifact, model_training_config
         )
-        model_training.run_model_training()
+        model_training_artifact = model_training.run_model_training()
     except Exception as e:
         logger.error(f"Error while running Pipeline: {e}")
 

@@ -1,0 +1,2 @@
+Model Training Klasse auslagern in utils. 
+Andere Komponenten anschauen wegen auslagerungen in utils.

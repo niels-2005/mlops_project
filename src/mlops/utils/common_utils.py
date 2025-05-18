@@ -78,3 +78,9 @@ def load_object(file_path: str):
     except Exception as e:
         logger.error(f"Error while loading Object from: {file_path}")
         raise e
+
+
+def get_X_y(df: pd.DataFrame, target_feature: str) -> tuple[pd.DataFrame, pd.Series]:
+    X = df.drop(target_feature, axis=1)
+    y = df[target_feature]
+    return X, y
