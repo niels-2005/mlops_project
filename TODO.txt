@@ -1,2 +1,8 @@
-Model Training Klasse auslagern in utils. 
-Andere Komponenten anschauen wegen auslagerungen in utils.
+EVALUATION auf Test Daten:
+
+f2_score mit beta=2 
+recall = so hoch wie möglich 
+precision = min 70% 
+Threshold Tuning! 
+danach ROC AUC 
+Konfusionsmatrix

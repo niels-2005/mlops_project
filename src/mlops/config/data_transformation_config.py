@@ -8,6 +8,7 @@ class DataTransformationConfig(CommonConfig):
         super().__init__()
         self.data_transformation_config = self.config["data_transformation"]
         self.schema_path = self.data_transformation_config["schema_path"]
+
         self.data_transformation_dir = get_os_path(
             self.current_artifact_dir,
             self.data_transformation_config["data_transformation_dir"],
@@ -16,9 +17,21 @@ class DataTransformationConfig(CommonConfig):
             self.data_transformation_dir,
             self.data_transformation_config["preprocessor_objects_dir"],
         )
-        self.standard_scaler_path = get_os_path(
+        self.standard_scaler_artifact_path = get_os_path(
             self.preprocessors_dir,
             self.data_transformation_config["standard_scaler_path"],
+        )
+        self.standard_scaler_inference_path = get_os_path(
+            self.pipeline_steps_dir,
+            self.data_transformation_config["standard_scaler_path"],
+        )
+        self.feature_binning_artifact_path = get_os_path(
+            self.preprocessors_dir,
+            self.data_transformation_config["feature_binning_path"],
+        )
+        self.feature_binning_inference_path = get_os_path(
+            self.pipeline_steps_dir,
+            self.data_transformation_config["feature_binning_path"],
         )
         self.transformed_data_dir = get_os_path(
             self.data_transformation_dir,

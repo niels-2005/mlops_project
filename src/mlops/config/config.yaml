@@ -1,5 +1,8 @@
 common:
   artifact_dir: "mlops_artifacts"
+  best_run_dir: "best_run"
+  runs_dir: "runs"
+  pipeline_steps_dir: "pipeline_steps"
   seed: 42
 
 data_ingestion:
@@ -29,6 +32,7 @@ data_transformation:
   schema_path: "src/mlops/schemas/data_transformation_schema.yaml"
   preprocessor_objects_dir: "preprocessor_objects"
   standard_scaler_path: "standard_scaler.pkl"
+  feature_binning_path: "feature_binning.pkl"
   transformed_data_dir: "transformed_data"
   transformed_train_path: "transformed_train.csv"
   transformed_test_path: "transformed_test.csv"

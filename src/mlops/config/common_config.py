@@ -14,4 +14,11 @@ class CommonConfig:
         self.common_config = self.config["common"]
         self.artifact_dir = self.common_config["artifact_dir"]
         self.seed = self.common_config["seed"]
-        self.current_artifact_dir = get_os_path(self.artifact_dir, self.timestamp)
+        self.best_run_dir = get_os_path(
+            self.artifact_dir, self.common_config["best_run_dir"]
+        )
+        self.runs_dir = get_os_path(self.artifact_dir, self.common_config["runs_dir"])
+        self.current_artifact_dir = get_os_path(self.runs_dir, self.timestamp)
+        self.pipeline_steps_dir = get_os_path(
+            self.current_artifact_dir, self.common_config["pipeline_steps_dir"]
+        )

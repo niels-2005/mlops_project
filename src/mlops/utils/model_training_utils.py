@@ -1,5 +1,6 @@
 from sklearn.feature_selection import SelectKBest, f_classif
-from sklearn.metrics import fbeta_score, make_scorer
+from sklearn.metrics import (fbeta_score, make_scorer, precision_score,
+                             recall_score)
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.pipeline import Pipeline
 
@@ -66,18 +67,40 @@ def get_training_save_paths(config, model_name):
     }
 
 
-def save_tuning_summary(
-    random_search: RandomizedSearchCV, X_train, save_path: str
-) -> None:
+def get_training_metrics(random_search: RandomizedSearchCV, X_train, y_train):
+    y_pred = random_search.predict(X_train)
+    recall = recall_score(y_train, y_pred)
+    precision = precision_score(y_train, y_pred)
     best_fbeta_score = float(random_search.best_score_)
+    return recall, precision, best_fbeta_score
+
+
+def get_best_params(random_search: RandomizedSearchCV):
     best_params = random_search.best_params_
     best_params["feature_selector__score_func"] = f_classif.__name__
+    return best_params
 
+
+def get_selected_features(random_search: RandomizedSearchCV, X_train):
     feature_selector = random_search.best_estimator_.named_steps["feature_selector"]
     selected_features = X_train.columns[feature_selector.get_support()].tolist()
+    return selected_features
+
+
+def save_tuning_summary(
+    random_search: RandomizedSearchCV, X_train, y_train, save_path: str
+) -> None:
+    recall, precision, best_fbeta_score = get_training_metrics(
+        random_search, X_train, y_train
+    )
+    best_params = get_best_params(random_search)
+
+    selected_features = get_selected_features(random_search, X_train)
 
     content = {
         "best_fbeta_score": best_fbeta_score,
+        "recall_score": recall,
+        "precision_score": precision,
         "best_params": best_params,
         "selected_features": selected_features,
     }

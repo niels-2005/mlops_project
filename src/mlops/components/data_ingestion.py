@@ -11,7 +11,10 @@ class DataIngestion:
         self.config = config
         self.logger = get_logger()
         create_directory(self.config.artifact_dir)
+        create_directory(self.config.best_run_dir)
+        create_directory(self.config.runs_dir)
         create_directory(self.config.current_artifact_dir)
+        create_directory(self.config.pipeline_steps_dir)
         create_directory(self.config.data_ingestion_dir)
         create_directory(self.config.raw_data_dir)
         create_directory(self.config.ingested_data_dir)

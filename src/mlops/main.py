@@ -34,6 +34,7 @@ def run_mlops_pipeline():
         model_training_artifact = model_training.run_model_training()
     except Exception as e:
         logger.error(f"Error while running Pipeline: {e}")
+        raise e
 
 
 if __name__ == "__main__":

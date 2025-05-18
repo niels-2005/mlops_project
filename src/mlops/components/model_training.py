@@ -65,7 +65,10 @@ class ModelTraining:
                 best_estimators[model_name] = best_estimator
 
                 save_tuning_summary(
-                    random_search, X_train, training_save_paths["tuning_summary_path"]
+                    random_search,
+                    X_train,
+                    y_train,
+                    training_save_paths["tuning_summary_path"],
                 )
             return best_estimators
         except Exception as e:
