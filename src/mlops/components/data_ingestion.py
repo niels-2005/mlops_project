@@ -1,7 +1,7 @@
 from mlops.artifacts.data_ingestion_artifact import DataIngestionArtifact
 from mlops.config.data_ingestion_config import DataIngestionConfig
 from mlops.utils.common_utils import (create_directory, read_dataset,
-                                      save_file_as_csv)
+                                      save_file_as_csv, write_yaml_file)
 from mlops.utils.data_ingestion_utils import perform_train_test_split
 from src.logger.get_logger import get_logger
 
@@ -14,6 +14,7 @@ class DataIngestion:
         create_directory(self.config.best_run_dir)
         create_directory(self.config.runs_dir)
         create_directory(self.config.current_artifact_dir)
+        write_yaml_file(self.config.run_config_save_path, self.config.config)
         create_directory(self.config.pipeline_steps_dir)
         create_directory(self.config.data_ingestion_dir)
         create_directory(self.config.raw_data_dir)

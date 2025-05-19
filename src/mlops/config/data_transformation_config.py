@@ -7,11 +7,14 @@ class DataTransformationConfig(CommonConfig):
     def __init__(self):
         super().__init__()
         self.data_transformation_config = self.config["data_transformation"]
-        self.schema_path = self.data_transformation_config["schema_path"]
-
+        self.schema_read_path = self.data_transformation_config["schema_read_path"]
         self.data_transformation_dir = get_os_path(
             self.current_artifact_dir,
             self.data_transformation_config["data_transformation_dir"],
+        )
+        self.schema_save_path = get_os_path(
+            self.data_transformation_dir,
+            self.data_transformation_config["schema_save_path"],
         )
         self.preprocessors_dir = get_os_path(
             self.data_transformation_dir,

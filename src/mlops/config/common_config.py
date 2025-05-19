@@ -22,3 +22,6 @@ class CommonConfig:
         self.pipeline_steps_dir = get_os_path(
             self.current_artifact_dir, self.common_config["pipeline_steps_dir"]
         )
+        self.run_config_save_path = get_os_path(
+            self.current_artifact_dir, self.common_config["run_config_save_path"]
+        )

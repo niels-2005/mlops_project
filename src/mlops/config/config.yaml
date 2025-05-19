@@ -3,6 +3,7 @@ common:
   best_run_dir: "best_run"
   runs_dir: "runs"
   pipeline_steps_dir: "pipeline_steps"
+  run_config_save_path: "run_config.yaml"
   seed: 42
 
 data_ingestion:
@@ -17,9 +18,11 @@ data_ingestion:
 
 data_validation:
   data_validation_dir: "data_validation"
-  schema_path: "src/mlops/schemas/data_validation_schema.yaml"
-  is_validated_train_path: "data_validation_train.yaml"
-  is_validated_test_path: "data_validation_test.yaml"
+  schema_read_path: "src/mlops/schemas/data_validation_schema.yaml"
+  schema_save_path: "data_validation_schema.yaml"
+  validation_reports_dir: "validation_reports"
+  validation_report_train_path: "validation_report_train.yaml"
+  validation_report_test_path: "validation_report_test.yaml"
   validated_data_dir: "validated_data"
   invalidated_data_dir: "invalidated_data"
   valid_train_path: "validated_train.csv"
@@ -29,7 +32,8 @@ data_validation:
 
 data_transformation:
   data_transformation_dir: "data_transformation"
-  schema_path: "src/mlops/schemas/data_transformation_schema.yaml"
+  schema_read_path: "src/mlops/schemas/data_transformation_schema.yaml"
+  schema_save_path: "data_transformation_schema.yaml"
   preprocessor_objects_dir: "preprocessor_objects"
   standard_scaler_path: "standard_scaler.pkl"
   feature_binning_path: "feature_binning.pkl"
@@ -39,7 +43,8 @@ data_transformation:
 
 model_training:
   model_training_dir: "model_training"
-  schema_path: "src/mlops/schemas/model_training_schema.yaml"
+  schema_read_path: "src/mlops/schemas/model_training_schema.yaml"
+  schema_save_path: "model_training_schema.yaml"
   logistic_regression_dir: "logistic_regression"
   random_forest_dir: "random_forest"
   xgboost_dir: "xgboost"
@@ -50,3 +55,4 @@ model_training:
   target_feature: "target"
 
 model_evaluation:
+  model_evaluation_dir: "model_evaluation"

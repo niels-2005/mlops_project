@@ -5,4 +5,9 @@ recall = so hoch wie möglich
 precision = min 70% 
 Threshold Tuning! 
 danach ROC AUC 
-Konfusionsmatrix
+Konfusionsmatrix 
+
+
+DATA_TRANSFORMATION ANSCHAUEN OB UTILS MÖGLICH 
+
+DATA_VALIDATION REFACTORING ANSCHAUEN

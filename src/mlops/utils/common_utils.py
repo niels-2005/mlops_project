@@ -23,7 +23,7 @@ def write_yaml_file(file_path: str, content: object) -> None:
     try:
         with open(file_path, "w") as file:
             logger.info(f"Sucessful saved yaml file in: {file_path}")
-            yaml.dump(content, file)
+            yaml.dump(content, file, sort_keys=False)
     except Exception as e:
         logger.error(e)
         raise e

@@ -2,9 +2,9 @@ from mlops.artifacts.data_transformation_artifact import \
     DataTransformationArtifact
 from mlops.artifacts.data_validation_artifact import DataValidationArtifact
 from mlops.config.data_transformation_config import DataTransformationConfig
-from mlops.utils.common_utils import (create_directory, get_os_path,
-                                      read_dataset, read_yaml_file,
-                                      save_file_as_csv, save_object)
+from mlops.utils.common_utils import (create_directory, read_dataset,
+                                      read_yaml_file, save_file_as_csv,
+                                      save_object, write_yaml_file)
 from mlops.utils.data_transformation_utils import (drop_duplicates,
                                                    drop_null_values,
                                                    perform_feature_binning,
@@ -24,7 +24,8 @@ class DataTransformation:
         create_directory(self.config.data_transformation_dir)
         create_directory(self.config.preprocessors_dir)
         create_directory(self.config.transformed_data_dir)
-        self.schema = read_yaml_file(self.config.schema_path)
+        self.schema = read_yaml_file(self.config.schema_read_path)
+        write_yaml_file(self.config.schema_save_path, self.schema)
         self.feature_binning_schema = self.schema["feature_binning"]
 
     def run_data_transformation(self):

@@ -19,9 +19,11 @@ class DataValidation:
         self.config = config
         self.logger = get_logger()
         create_directory(self.config.data_validation_dir)
+        create_directory(self.config.validation_reports_dir)
         create_directory(self.config.validated_data_dir)
         create_directory(self.config.invalidated_data_dir)
-        self.schema = read_yaml_file(self.config.schema_path)
+        self.schema = read_yaml_file(self.config.schema_read_path)
+        write_yaml_file(self.config.schema_save_path, self.schema)
         self.len_original_columns = len(self.schema["columns"])
         self.column_schema = {
             list(col.keys())[0]: list(col.values())[0] for col in self.schema["columns"]
@@ -76,9 +78,11 @@ class DataValidation:
             test_df = read_dataset(self.data_ingestion_artifact.test_file_path)
 
             self.generate_validation_report(
-                train_df, self.config.is_validated_train_path
+                train_df, self.config.validation_report_train_path
             )
-            self.generate_validation_report(test_df, self.config.is_validated_test_path)
+            self.generate_validation_report(
+                test_df, self.config.validation_report_test_path
+            )
 
             if self.validation_status == False:
                 save_file_as_csv(train_df, self.config.invalidated_train_path)
