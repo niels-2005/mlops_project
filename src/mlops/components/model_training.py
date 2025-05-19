@@ -11,8 +11,8 @@ from mlops.utils.common_utils import (create_directory, get_X_y, read_dataset,
 from mlops.utils.model_training_utils import (get_param_distributions,
                                               get_sklearn_estimator,
                                               get_training_save_paths,
-                                              peform_treshold_tuning,
                                               perform_hyperparameter_tuning,
+                                              perform_threshold_tuning,
                                               save_pipeline_objects,
                                               save_tuning_summary)
 from src.logger.get_logger import get_logger
@@ -46,6 +46,7 @@ class ModelTraining:
     def get_best_estimators(self, X_train, y_train):
         try:
             best_estimators = {}
+            best_thresholds = {}
             for model_name, model in self.models.items():
                 self.logger.info(f"Running randomized search for: {model_name}")
                 estimator = get_sklearn_estimator(model)
@@ -64,7 +65,7 @@ class ModelTraining:
 
                 best_estimator = random_search.best_estimator_
 
-                best_treshold = peform_treshold_tuning(
+                best_treshold = perform_threshold_tuning(
                     self.threshold_tuning_schema,
                     best_estimator,
                     X_train,
@@ -83,7 +84,8 @@ class ModelTraining:
                 )
 
                 best_estimators[model_name] = best_estimator
-            return best_estimators
+                best_thresholds[model_name] = best_treshold
+            return best_estimators, best_thresholds
         except Exception as e:
             self.logger.error(f"Error occurred during best estimator search: {e}")
             raise e
@@ -96,13 +98,20 @@ class ModelTraining:
             )
             X_train, y_train = get_X_y(df_train, self.config.target_feature)
 
-            best_estimators = self.get_best_estimators(X_train, y_train)
+            best_estimators, best_thresholds = self.get_best_estimators(
+                X_train, y_train
+            )
 
             model_training_artifact = ModelTrainingArtifact(
                 transformed_test_path=self.data_transformation_artifact.transformed_test_path,
-                logistic_regression_pipeline=best_estimators["logistic_regression"],
-                random_forest_pipeline=best_estimators["random_forest"],
-                xboost_pipeline=best_estimators["xgboost"],
+                logistic_regression_estimator=best_estimators["logistic_regression"],
+                logistic_regression_best_threshold=best_thresholds[
+                    "logistic_regression"
+                ],
+                random_forest_estimator=best_estimators["random_forest"],
+                random_forest_best_threshold=best_thresholds["random_forest"],
+                xgboost_estimator=best_estimators["xgboost"],
+                xgboost_best_threshold=best_thresholds["xgboost"],
             )
             self.logger.info(f"Model Training returns: {model_training_artifact}")
             self.logger.info("Model training completed.")

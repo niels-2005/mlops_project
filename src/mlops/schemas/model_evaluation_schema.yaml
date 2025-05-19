@@ -1,2 +1,5 @@
-test:
-  - meow
+metrics_to_compute:
+  f2_score: true
+  recall: true
+  precision: true
+  confusion_matrix: true

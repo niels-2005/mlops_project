@@ -1,5 +1,5 @@
 random_search:
-  n_iter: 5
+  n_iter: 100
   cv: 5
   fbeta: 2
   n_jobs: -1

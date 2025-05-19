@@ -58,7 +58,9 @@ def perform_hyperparameter_tuning(
     return random_search
 
 
-def peform_treshold_tuning(threshold_tuning_schema, estimator, X_train, y_train, seed):
+def perform_threshold_tuning(
+    threshold_tuning_schema, estimator, X_train, y_train, seed
+):
     tuned_threshold = TunedThresholdClassifierCV(
         estimator=estimator,
         scoring=get_scoring_function(beta=threshold_tuning_schema["fbeta"]),
