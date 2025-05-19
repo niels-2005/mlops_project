@@ -22,19 +22,19 @@ class DataTransformationConfig(CommonConfig):
         )
         self.standard_scaler_artifact_path = get_os_path(
             self.preprocessors_dir,
-            self.data_transformation_config["standard_scaler_path"],
+            self.common_config["standard_scaler_pkl_path"],
         )
         self.standard_scaler_inference_path = get_os_path(
             self.pipeline_steps_dir,
-            self.data_transformation_config["standard_scaler_path"],
+            self.common_config["standard_scaler_pkl_path"],
         )
         self.feature_binning_artifact_path = get_os_path(
             self.preprocessors_dir,
-            self.data_transformation_config["feature_binning_path"],
+            self.common_config["feature_binning_pkl_path"],
         )
         self.feature_binning_inference_path = get_os_path(
             self.pipeline_steps_dir,
-            self.data_transformation_config["feature_binning_path"],
+            self.common_config["feature_binning_pkl_path"],
         )
         self.transformed_data_dir = get_os_path(
             self.data_transformation_dir,

@@ -16,6 +16,17 @@ class ModelEvaluationConfig(CommonConfig):
             self.current_artifact_dir,
             self.model_evaluation_config["model_evaluation_dir"],
         )
+        self.best_model_summary_path = get_os_path(
+            self.current_artifact_dir,
+            self.model_evaluation_config["best_model_summary_path"],
+        )
+        self.model_pkl_path = get_os_path(
+            self.pipeline_steps_dir, self.common_config["model_pkl_path"]
+        )
+        self.feature_selector_pkl_path = get_os_path(
+            self.pipeline_steps_dir,
+            self.common_config["feature_selector_pkl_path"],
+        )
         self.schema_save_path = get_os_path(
             self.model_evaluation_dir, self.model_evaluation_config["schema_save_path"]
         )

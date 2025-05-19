@@ -1,12 +1,14 @@
 import os
-
-from sklearn.metrics import (confusion_matrix, fbeta_score, precision_score,
-                             recall_score, roc_auc_score)
+import shutil
 
 from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
 from mlops.config.model_evaluation_config import ModelEvaluationConfig
 from mlops.utils.common_utils import (create_directory, get_X_y, read_dataset,
                                       read_yaml_file, write_yaml_file)
+from mlops.utils.model_evaluation_utils import (evaluate_single_model,
+                                                finalize_best_model,
+                                                save_evaluation_summary,
+                                                update_best_model)
 from src.logger.get_logger import get_logger
 
 
@@ -37,60 +39,50 @@ class ModelEvaluation:
             "xgboost": self.model_training_artifact.xgboost_best_threshold,
         }
 
-    def compute_metrics(self, metrics_to_compute, y_test, y_pred):
-        metrics = {}
-
-        if metrics_to_compute["f2_score"]:
-            f2_score = fbeta_score(y_test, y_pred, beta=2)
-            metrics["f2_score"] = f2_score
-
-        if metrics_to_compute["recall"]:
-            recall = recall_score(y_test, y_pred)
-            metrics["recall"] = recall
-
-        if metrics_to_compute["precision"]:
-            precision = precision_score(y_test, y_pred)
-            metrics["precision"] = precision
-
-        if metrics_to_compute["confusion_matrix"]:
-            pass
-
-        return metrics
-
     def run_model_evaluation(self):
         try:
             self.logger.info("Model Evaluation started.")
             df_test = read_dataset(self.model_training_artifact.transformed_test_path)
             X_test, y_test = get_X_y(df_test, self.config.target_feature)
 
+            best_model_data = {
+                "f2_score": 0,
+                "recall": 0,
+                "precision": 0,
+                "estimator": None,
+                "model_name": None,
+                "threshold": 0.5,
+                "threshold_used": False,
+            }
+
             for model_name, estimator in self.estimators.items():
-                y_pred = estimator.predict(X_test)
-                y_proba = estimator.predict_proba(X_test)[:, 1]
-                threshold = self.thresholds[model_name]
-                y_pred_threshold = (y_proba >= threshold).astype(int)
-
-                roc_auc = roc_auc_score(y_test, y_proba)
-
-                metrics_without_threshold = self.compute_metrics(
-                    self.metrics_to_compute_schema, y_test, y_pred
-                )
-
-                metrics_with_threshold = self.compute_metrics(
-                    self.metrics_to_compute_schema, y_test, y_pred_threshold
-                )
-
                 model_dir = getattr(self.config, f"{model_name}_dir")
-                evaluation_summary_path = os.path.join(
-                    model_dir, self.config.evaluation_summary_path
+                eval_metrics = evaluate_single_model(
+                    self.metrics_to_compute_schema,
+                    estimator,
+                    X_test,
+                    y_test,
+                    self.thresholds[model_name],
+                    model_dir,
+                    model_name,
+                )
+                best_model_data = update_best_model(
+                    eval_metrics, best_model_data, self.thresholds[model_name]
+                )
+                save_evaluation_summary(
+                    self.config.evaluation_summary_path,
+                    model_dir,
+                    eval_metrics,
                 )
 
-                content = {
-                    "metrics_without_threshold": metrics_without_threshold,
-                    "metrics_with_threshold": metrics_with_threshold,
-                    "roc_auc_score": float(roc_auc),
-                }
+            finalize_best_model(self.config, best_model_data)
 
-                write_yaml_file(evaluation_summary_path, content)
+            if not os.path.exists(self.config.best_run_dir):
+                destination_dir = os.path.join(
+                    self.config.best_run_dir, self.config.timestamp
+                )
+                if not os.path.exists(destination_dir):
+                    shutil.copytree(self.config.current_artifact_dir, destination_dir)
 
         except Exception as e:
             self.logger.error(f"Error occurred during model evaluation: {e}")

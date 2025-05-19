@@ -9,13 +9,13 @@ from mlops.utils.common_utils import get_os_path, save_object, write_yaml_file
 
 
 def save_pipeline_objects(best_estimator, training_paths: dict):
-    save_object(best_estimator, training_paths["best_pipeline_path"])
+    save_object(best_estimator, training_paths["estimator_pkl_path"])
     save_object(
         best_estimator.named_steps["feature_selector"],
-        training_paths["feature_selector_path"],
+        training_paths["feature_selector_pkl_path"],
     )
     save_object(
-        best_estimator.named_steps["classifier"], training_paths["best_model_path"]
+        best_estimator.named_steps["classifier"], training_paths["model_pkl_path"]
     )
 
 
@@ -76,9 +76,11 @@ def perform_threshold_tuning(
 def get_training_save_paths(config, model_name):
     model_dir = getattr(config, f"{model_name}_dir")
     return {
-        "best_pipeline_path": get_os_path(model_dir, config.best_pipeline_path),
-        "best_model_path": get_os_path(model_dir, config.best_model_path),
-        "feature_selector_path": get_os_path(model_dir, config.feature_selector_path),
+        "estimator_pkl_path": get_os_path(model_dir, config.estimator_pkl_path),
+        "model_pkl_path": get_os_path(model_dir, config.model_pkl_path),
+        "feature_selector_pkl_path": get_os_path(
+            model_dir, config.feature_selector_pkl_path
+        ),
         "tuning_summary_path": get_os_path(model_dir, config.tuning_summary_path),
     }
 
