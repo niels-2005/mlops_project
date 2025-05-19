@@ -1,7 +1,8 @@
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.metrics import (fbeta_score, make_scorer, precision_score,
                              recall_score)
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import (RandomizedSearchCV,
+                                     TunedThresholdClassifierCV)
 from sklearn.pipeline import Pipeline
 
 from mlops.utils.common_utils import get_os_path, save_object, write_yaml_file
@@ -18,7 +19,7 @@ def save_pipeline_objects(best_estimator, training_paths: dict):
     )
 
 
-def get_sklearn_pipeline(model) -> Pipeline:
+def get_sklearn_estimator(model) -> Pipeline:
     return Pipeline([("feature_selector", SelectKBest()), ("classifier", model)])
 
 
@@ -42,10 +43,10 @@ def get_scoring_function(beta):
 
 
 def perform_hyperparameter_tuning(
-    random_search_schema, pipeline, param_distributions, X_train, y_train, seed
+    random_search_schema, estimator, param_distributions, X_train, y_train, seed
 ):
     random_search = RandomizedSearchCV(
-        estimator=pipeline,
+        estimator=estimator,
         param_distributions=param_distributions,
         n_iter=random_search_schema["n_iter"],
         cv=random_search_schema["cv"],
@@ -57,6 +58,19 @@ def perform_hyperparameter_tuning(
     return random_search
 
 
+def peform_treshold_tuning(threshold_tuning_schema, estimator, X_train, y_train, seed):
+    tuned_threshold = TunedThresholdClassifierCV(
+        estimator=estimator,
+        scoring=get_scoring_function(beta=threshold_tuning_schema["fbeta"]),
+        response_method=threshold_tuning_schema["response_method"],
+        thresholds=threshold_tuning_schema["thresholds"],
+        cv=threshold_tuning_schema["cv"],
+        n_jobs=threshold_tuning_schema["n_jobs"],
+        random_state=seed,
+    ).fit(X_train, y_train)
+    return tuned_threshold.best_threshold_
+
+
 def get_training_save_paths(config, model_name):
     model_dir = getattr(config, f"{model_name}_dir")
     return {
@@ -65,14 +79,6 @@ def get_training_save_paths(config, model_name):
         "feature_selector_path": get_os_path(model_dir, config.feature_selector_path),
         "tuning_summary_path": get_os_path(model_dir, config.tuning_summary_path),
     }
-
-
-def get_training_metrics(random_search: RandomizedSearchCV, X_train, y_train):
-    y_pred = random_search.predict(X_train)
-    recall = recall_score(y_train, y_pred)
-    precision = precision_score(y_train, y_pred)
-    best_fbeta_score = float(random_search.best_score_)
-    return recall, precision, best_fbeta_score
 
 
 def get_best_params(random_search: RandomizedSearchCV):
@@ -88,19 +94,15 @@ def get_selected_features(random_search: RandomizedSearchCV, X_train):
 
 
 def save_tuning_summary(
-    random_search: RandomizedSearchCV, X_train, y_train, save_path: str
+    random_search: RandomizedSearchCV, best_threshold, X_train, save_path: str
 ) -> None:
-    recall, precision, best_fbeta_score = get_training_metrics(
-        random_search, X_train, y_train
-    )
     best_params = get_best_params(random_search)
 
     selected_features = get_selected_features(random_search, X_train)
 
     content = {
-        "best_fbeta_score": best_fbeta_score,
-        "recall_score": recall,
-        "precision_score": precision,
+        "best_fbeta_score": float(random_search.best_score_),
+        "best_threshold": float(best_threshold),
         "best_params": best_params,
         "selected_features": selected_features,
     }

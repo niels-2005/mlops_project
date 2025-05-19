@@ -1,10 +1,12 @@
 from mlops.components.data_ingestion import DataIngestion
 from mlops.components.data_transformation import DataTransformation
 from mlops.components.data_validation import DataValidation
+from mlops.components.model_evaluation import ModelEvaluation
 from mlops.components.model_training import ModelTraining
 from mlops.config.data_ingestion_config import DataIngestionConfig
 from mlops.config.data_transformation_config import DataTransformationConfig
 from mlops.config.data_validation_config import DataValidationConfig
+from mlops.config.model_evaluation_config import ModelEvaluationConfig
 from mlops.config.model_training_config import ModelTrainingConfig
 from src.logger.get_logger import get_logger
 
@@ -32,6 +34,11 @@ def run_mlops_pipeline():
             data_transformation_artifact, model_training_config
         )
         model_training_artifact = model_training.run_model_training()
+        model_evaluation_config = ModelEvaluationConfig()
+        model_evaluation = ModelEvaluation(
+            model_training_artifact, model_evaluation_config
+        )
+        model_evaluation.run_model_evaluation()
     except Exception as e:
         logger.error(f"Error while running Pipeline: {e}")
         raise e

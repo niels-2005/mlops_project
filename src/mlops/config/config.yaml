@@ -56,3 +56,10 @@ model_training:
 
 model_evaluation:
   model_evaluation_dir: "model_evaluation"
+  schema_read_path: "src/mlops/schemas/model_evaluation_schema.yaml"
+  schema_save_path: "model_evaluation_schema.yaml"
+  logistic_regression_dir: "logistic_regression"
+  random_forest_dir: "random_forest"
+  xgboost_dir: "xgboost"
+  evaluation_summary_path: "evaluation_summary.yaml"
+  target_feature: "target"

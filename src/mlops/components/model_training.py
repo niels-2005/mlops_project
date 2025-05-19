@@ -9,8 +9,9 @@ from mlops.config.model_training_config import ModelTrainingConfig
 from mlops.utils.common_utils import (create_directory, get_X_y, read_dataset,
                                       read_yaml_file, write_yaml_file)
 from mlops.utils.model_training_utils import (get_param_distributions,
-                                              get_sklearn_pipeline,
+                                              get_sklearn_estimator,
                                               get_training_save_paths,
+                                              peform_treshold_tuning,
                                               perform_hyperparameter_tuning,
                                               save_pipeline_objects,
                                               save_tuning_summary)
@@ -33,6 +34,7 @@ class ModelTraining:
         self.schema = read_yaml_file(self.config.schema_read_path)
         write_yaml_file(self.config.schema_save_path, self.schema)
         self.random_search_schema = self.schema["random_search"]
+        self.threshold_tuning_schema = self.schema["threshold_tuning"]
         self.feature_selection_schema = self.schema["feature_selection"]
         self.models_schema = self.schema["models"]
         self.models = {
@@ -46,31 +48,41 @@ class ModelTraining:
             best_estimators = {}
             for model_name, model in self.models.items():
                 self.logger.info(f"Running randomized search for: {model_name}")
-                pipeline = get_sklearn_pipeline(model)
+                estimator = get_sklearn_estimator(model)
                 param_distributions = get_param_distributions(
                     self.models_schema[model_name]["param_distributions"],
                     self.feature_selection_schema,
                 )
                 random_search = perform_hyperparameter_tuning(
                     self.random_search_schema,
-                    pipeline,
+                    estimator,
                     param_distributions,
                     X_train,
                     y_train,
                     self.config.seed,
                 )
-                training_save_paths = get_training_save_paths(self.config, model_name)
 
                 best_estimator = random_search.best_estimator_
+
+                best_treshold = peform_treshold_tuning(
+                    self.threshold_tuning_schema,
+                    best_estimator,
+                    X_train,
+                    y_train,
+                    self.config.seed,
+                )
+
+                training_save_paths = get_training_save_paths(self.config, model_name)
                 save_pipeline_objects(best_estimator, training_save_paths)
-                best_estimators[model_name] = best_estimator
 
                 save_tuning_summary(
                     random_search,
+                    best_treshold,
                     X_train,
-                    y_train,
                     training_save_paths["tuning_summary_path"],
                 )
+
+                best_estimators[model_name] = best_estimator
             return best_estimators
         except Exception as e:
             self.logger.error(f"Error occurred during best estimator search: {e}")
