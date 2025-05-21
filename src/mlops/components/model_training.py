@@ -1,13 +1,18 @@
+from catboost import CatBoostClassifier
+from lightgbm import LGBMClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
 from mlops.artifacts.data_transformation_artifact import \
     DataTransformationArtifact
 from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
 from mlops.config.model_training_config import ModelTrainingConfig
-from mlops.utils.common_utils import (create_directory, get_X_y, read_dataset,
-                                      read_yaml_file, write_yaml_file)
+from mlops.utils.common_utils import (create_directories, get_X_y,
+                                      read_dataset, read_yaml_file,
+                                      write_yaml_file)
 from mlops.utils.model_training_utils import (get_param_distributions,
                                               get_sklearn_estimator,
                                               get_training_save_paths,
@@ -27,10 +32,18 @@ class ModelTraining:
         self.data_transformation_artifact = data_transformation_artifact
         self.config = config
         self.logger = get_logger()
-        create_directory(self.config.model_training_dir)
-        create_directory(self.config.logistic_regression_dir)
-        create_directory(self.config.random_forest_dir)
-        create_directory(self.config.xgboost_dir)
+        create_directories(
+            [
+                self.config.model_training_dir,
+                self.config.logistic_regression_dir,
+                self.config.random_forest_dir,
+                self.config.xgboost_dir,
+                self.config.catboost_dir,
+                self.config.svc_dir,
+                self.config.mlp_dir,
+                self.config.sgd_dir,
+            ]
+        )
         self.schema = read_yaml_file(self.config.schema_read_path)
         write_yaml_file(self.config.schema_save_path, self.schema)
         self.random_search_schema = self.schema["random_search"]
@@ -41,6 +54,10 @@ class ModelTraining:
             "logistic_regression": LogisticRegression(random_state=self.config.seed),
             "random_forest": RandomForestClassifier(random_state=self.config.seed),
             "xgboost": XGBClassifier(seed=self.config.seed),
+            "catboost": CatBoostClassifier(random_state=self.config.seed),
+            "svc": SVC(random_state=self.config.seed),
+            "mlp": MLPClassifier(random_state=self.config.seed),
+            "sgd": SGDClassifier(random_state=self.config.seed),
         }
 
     def get_best_estimators(self, X_train, y_train):
@@ -103,15 +120,9 @@ class ModelTraining:
             )
 
             model_training_artifact = ModelTrainingArtifact(
-                transformed_test_path=self.data_transformation_artifact.transformed_test_path,
-                logistic_regression_estimator=best_estimators["logistic_regression"],
-                logistic_regression_best_threshold=best_thresholds[
-                    "logistic_regression"
-                ],
-                random_forest_estimator=best_estimators["random_forest"],
-                random_forest_best_threshold=best_thresholds["random_forest"],
-                xgboost_estimator=best_estimators["xgboost"],
-                xgboost_best_threshold=best_thresholds["xgboost"],
+                self.data_transformation_artifact.transformed_test_path,
+                best_estimators,
+                best_thresholds,
             )
             self.logger.info(f"Model Training returns: {model_training_artifact}")
             self.logger.info("Model training completed.")

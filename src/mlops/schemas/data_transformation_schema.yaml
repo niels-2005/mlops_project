@@ -1,14 +1,20 @@
 drop_null_values: true
 remove_duplicates: true
 
-columns_to_scale:
-  - resting bp s
-  - cholesterol
-  - max heart rate
-  - oldpeak
+feature_scaling:
+  enabled: true
+  scaler_name_options: ["standard_scaler", "min_max_scaler", "robust_scaler"]
+  scaler_name: "standard_scaler"
+  columns_to_scale:
+    - resting bp s
+    - cholesterol
+    - max heart rate
+    - oldpeak
 
 feature_binning:
-  column: "age"
-  bins: [0, 40, 50, 60, 80]
-  labels: [0, 1, 2, 3]
-  labels_hints: ["young", "middle-aged", "older", "senior"]
+  enabled: true
+  columns:
+    - column: "age"
+      bins: [0, 40, 50, 60, 80]
+      labels: [0, 1, 2, 3]
+      labels_hints: ["young", "middle-aged", "older", "senior"]

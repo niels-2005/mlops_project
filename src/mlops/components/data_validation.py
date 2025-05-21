@@ -3,7 +3,7 @@ import pandas as pd
 from mlops.artifacts.data_ingestion_artifact import DataIngestionArtifact
 from mlops.artifacts.data_validation_artifact import DataValidationArtifact
 from mlops.config.data_validation_config import DataValidationConfig
-from mlops.utils.common_utils import (create_directory, read_dataset,
+from mlops.utils.common_utils import (create_directories, read_dataset,
                                       read_yaml_file, save_file_as_csv,
                                       write_yaml_file)
 from src.logger.get_logger import get_logger
@@ -18,13 +18,16 @@ class DataValidation:
         self.data_ingestion_artifact = data_ingestion_artifact
         self.config = config
         self.logger = get_logger()
-        create_directory(self.config.data_validation_dir)
-        create_directory(self.config.validation_reports_dir)
-        create_directory(self.config.validated_data_dir)
-        create_directory(self.config.invalidated_data_dir)
+        create_directories(
+            [
+                self.config.data_validation_dir,
+                self.config.validation_reports_dir,
+                self.config.validated_data_dir,
+                self.config.invalidated_data_dir,
+            ]
+        )
         self.schema = read_yaml_file(self.config.schema_read_path)
         write_yaml_file(self.config.schema_save_path, self.schema)
-        self.len_original_columns = len(self.schema["columns"])
         self.column_schema = {
             list(col.keys())[0]: list(col.values())[0] for col in self.schema["columns"]
         }
@@ -56,17 +59,26 @@ class DataValidation:
                 )
             return validation_results, validation_status
         except Exception as e:
-            self.logger.exception(f"Error while generating validation results: {e}")
+            self.logger.exception(
+                f"Error occured while generating validation results: {e}"
+            )
             raise e
 
     def save_validation_report(self, validation_results, validation_status, file_path):
-        write_yaml_file(
-            file_path,
-            content={
-                "columns": validation_results,
-                "validation_status": validation_status,
-            },
-        )
+        try:
+            self.logger.info(f"Saving validation report at: {file_path}")
+            write_yaml_file(
+                file_path,
+                content={
+                    "columns": validation_results,
+                    "validation_status": validation_status,
+                },
+            )
+        except Exception as e:
+            self.logger.exception(
+                f"Error occured while saving validation report at {file_path}: {e}"
+            )
+            raise e
 
     def generate_validation_report(self, df: pd.DataFrame, file_path: str) -> None:
         try:
@@ -77,7 +89,9 @@ class DataValidation:
             )
             return validation_status
         except Exception as e:
-            self.logger.exception(f"Error while generating validation report: {e}")
+            self.logger.exception(
+                f"Error occured while generating validation report for {file_path}: {e}"
+            )
             raise e
 
     def run_data_validation(self) -> DataValidationArtifact:

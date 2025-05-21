@@ -3,8 +3,9 @@ import shutil
 
 from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
 from mlops.config.model_evaluation_config import ModelEvaluationConfig
-from mlops.utils.common_utils import (create_directory, get_X_y, read_dataset,
-                                      read_yaml_file, write_yaml_file)
+from mlops.utils.common_utils import (create_directories, get_X_y,
+                                      read_dataset, read_yaml_file,
+                                      write_yaml_file)
 from mlops.utils.model_evaluation_utils import (evaluate_single_model,
                                                 finalize_best_model,
                                                 save_evaluation_summary,
@@ -21,23 +22,23 @@ class ModelEvaluation:
         self.model_training_artifact = model_training_artifact
         self.config = config
         self.logger = get_logger()
-        create_directory(self.config.model_evaluation_dir)
-        create_directory(self.config.logistic_regression_dir)
-        create_directory(self.config.random_forest_dir)
-        create_directory(self.config.xgboost_dir)
+        create_directories(
+            [
+                self.config.model_evaluation_dir,
+                self.config.logistic_regression_dir,
+                self.config.random_forest_dir,
+                self.config.xgboost_dir,
+                self.config.catboost_dir,
+                self.config.svc_dir,
+                self.config.mlp_dir,
+                self.config.sgd_dir,
+            ]
+        )
         self.schema = read_yaml_file(self.config.schema_read_path)
         self.metrics_to_compute_schema = self.schema["metrics_to_compute"]
         write_yaml_file(self.config.schema_save_path, self.schema)
-        self.estimators = {
-            "logistic_regression": self.model_training_artifact.logistic_regression_estimator,
-            "random_forest": self.model_training_artifact.random_forest_estimator,
-            "xgboost": self.model_training_artifact.xgboost_estimator,
-        }
-        self.thresholds = {
-            "logistic_regression": self.model_training_artifact.logistic_regression_best_threshold,
-            "random_forest": self.model_training_artifact.random_forest_best_threshold,
-            "xgboost": self.model_training_artifact.xgboost_best_threshold,
-        }
+        self.estimators = self.model_training_artifact.best_estimators
+        self.thresholds = self.model_training_artifact.best_thresholds
 
     def run_model_evaluation(self):
         try:

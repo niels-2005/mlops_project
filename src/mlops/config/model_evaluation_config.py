@@ -40,3 +40,15 @@ class ModelEvaluationConfig(CommonConfig):
         self.xgboost_dir = get_os_path(
             self.model_evaluation_dir, self.model_evaluation_config["xgboost_dir"]
         )
+        self.catboost_dir = get_os_path(
+            self.model_evaluation_dir, self.model_evaluation_config["catboost_dir"]
+        )
+        self.svc_dir = get_os_path(
+            self.model_evaluation_dir, self.model_evaluation_config["svc_dir"]
+        )
+        self.mlp_dir = get_os_path(
+            self.model_evaluation_dir, self.model_evaluation_config["mlp_dir"]
+        )
+        self.sgd_dir = get_os_path(
+            self.model_evaluation_dir, self.model_evaluation_config["sgd_dir"]
+        )

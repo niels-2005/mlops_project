@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 from mlops.artifacts.data_ingestion_artifact import DataIngestionArtifact
 from mlops.config.data_ingestion_config import DataIngestionConfig
-from mlops.utils.common_utils import (create_directory, read_dataset,
+from mlops.utils.common_utils import (create_directories, read_dataset,
                                       save_file_as_csv, write_yaml_file)
 from src.logger.get_logger import get_logger
 
@@ -15,14 +15,18 @@ class DataIngestion:
     def __init__(self, config: DataIngestionConfig):
         self.config = config
         self.logger = get_logger()
-        create_directory(self.config.artifact_dir)
-        create_directory(self.config.runs_dir)
-        create_directory(self.config.current_artifact_dir)
+        create_directories(
+            [
+                self.config.artifact_dir,
+                self.config.runs_dir,
+                self.config.current_artifact_dir,
+                self.config.pipeline_steps_dir,
+                self.config.data_ingestion_dir,
+                self.config.raw_data_dir,
+                self.config.ingested_data_dir,
+            ]
+        )
         write_yaml_file(self.config.run_config_save_path, self.config.config)
-        create_directory(self.config.pipeline_steps_dir)
-        create_directory(self.config.data_ingestion_dir)
-        create_directory(self.config.raw_data_dir)
-        create_directory(self.config.ingested_data_dir)
 
     def perform_train_test_split(
         self, df: pd.DataFrame, train_test_split_ratio: float, seed: int
@@ -38,7 +42,7 @@ class DataIngestion:
             )
             return train_df, test_df
         except Exception as e:
-            self.logger.error(f"Error at Train Test Split: {e}")
+            self.logger.error(f"Error occured at Train Test Split: {e}")
             raise e
 
     def run_data_ingestion(self) -> DataIngestionArtifact:

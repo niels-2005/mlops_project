@@ -30,13 +30,14 @@ def write_yaml_file(file_path: str, content: object) -> None:
 
 
 def get_os_path(str1, str2):
-    logger.info(f"Returning Path: {str1/str2}")
+    logger.info(f"Returning Path: {str1}/{str2}")
     return os.path.join(str1, str2)
 
 
-def create_directory(dir_name):
-    logger.info(f"Created Directory at: {dir_name}")
-    return os.makedirs(dir_name, exist_ok=True)
+def create_directories(dir_list):
+    for dir in dir_list:
+        logger.info(f"Created Directory at: {dir}")
+        os.makedirs(dir, exist_ok=True)
 
 
 def read_dataset(file_path: str) -> pd.DataFrame:
