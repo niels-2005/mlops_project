@@ -15,7 +15,7 @@ def read_yaml_file(file_path: str) -> dict:
             logger.info(f"Sucessful readed yaml file from: {file_path}")
             return yaml.safe_load(yaml_file)
     except Exception as e:
-        logger.error(e)
+        logger.exception(f"Error while reading yaml file for {file_path}: {e}")
         raise e
 
 
@@ -25,15 +25,13 @@ def write_yaml_file(file_path: str, content: object) -> None:
             logger.info(f"Sucessful saved yaml file in: {file_path}")
             yaml.dump(content, file, sort_keys=False)
     except Exception as e:
-        logger.error(e)
+        logger.exception(f"Error while writing yaml file for {file_path}: {e}")
         raise e
 
 
-def get_os_path(str1, str2, str3=None):
-    if str3 is not None:
-        return os.path.join(str1, str2, str3)
-    else:
-        return os.path.join(str1, str2)
+def get_os_path(str1, str2):
+    logger.info(f"Returning Path: {str1/str2}")
+    return os.path.join(str1, str2)
 
 
 def create_directory(dir_name):
@@ -66,7 +64,7 @@ def save_object(object, file_path: str):
         with open(file_path, "wb") as file:
             joblib.dump(object, file)
     except Exception as e:
-        logger.error(f"Error while saving Object to: {file_path}")
+        logger.error(f"Error while saving Object to {file_path}: {e}")
         raise e
 
 
@@ -76,11 +74,9 @@ def load_object(file_path: str):
         with open(file_path, "rb") as file:
             return joblib.load(file)
     except Exception as e:
-        logger.error(f"Error while loading Object from: {file_path}")
+        logger.error(f"Error while loading Object from {file_path}: {e}")
         raise e
 
 
 def get_X_y(df: pd.DataFrame, target_feature: str) -> tuple[pd.DataFrame, pd.Series]:
-    X = df.drop(target_feature, axis=1)
-    y = df[target_feature]
-    return X, y
+    return df.drop(target_feature, axis=1), df[target_feature]

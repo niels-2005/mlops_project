@@ -1,13 +1,9 @@
-EVALUATION auf Test Daten:
+REFACTOR DATA TRANSFORMATION, MODEL_TRAINING, MODEL EVALUATION 
 
-f2_score mit beta=2 
-recall = so hoch wie möglich 
-precision = min 70% 
-Threshold Tuning! 
-danach ROC AUC 
-Konfusionsmatrix 
+FEATURE BINNING SKALIERBAR MACHEN
 
+MEHR MODELLE ADDEN (SKALIERBAR MACHEN)
 
-DATA_TRANSFORMATION ANSCHAUEN OB UTILS MÖGLICH 
+best_run_manager 
 
-DATA_VALIDATION REFACTORING ANSCHAUEN
+get_os_path tauschen to os.path.join 

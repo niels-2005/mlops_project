@@ -1,8 +1,13 @@
+from logging import Logger
+from typing import Tuple
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
 from mlops.artifacts.data_ingestion_artifact import DataIngestionArtifact
 from mlops.config.data_ingestion_config import DataIngestionConfig
 from mlops.utils.common_utils import (create_directory, read_dataset,
                                       save_file_as_csv, write_yaml_file)
-from mlops.utils.data_ingestion_utils import perform_train_test_split
 from src.logger.get_logger import get_logger
 
 
@@ -19,6 +24,23 @@ class DataIngestion:
         create_directory(self.config.raw_data_dir)
         create_directory(self.config.ingested_data_dir)
 
+    def perform_train_test_split(
+        self, df: pd.DataFrame, train_test_split_ratio: float, seed: int
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        try:
+            train_df, test_df = train_test_split(
+                df,
+                test_size=train_test_split_ratio,
+                random_state=seed,
+            )
+            self.logger.info(
+                f"Train Test Split Successful, Train Shape: {train_df.shape}, Test Shape: {test_df.shape}"
+            )
+            return train_df, test_df
+        except Exception as e:
+            self.logger.error(f"Error at Train Test Split: {e}")
+            raise e
+
     def run_data_ingestion(self) -> DataIngestionArtifact:
         try:
             self.logger.info("Data Ingestion started.")
@@ -26,8 +48,8 @@ class DataIngestion:
 
             save_file_as_csv(df, self.config.raw_data_path)
 
-            train_df, test_df = perform_train_test_split(
-                df, self.config.train_test_split_ratio, self.config.seed, self.logger
+            train_df, test_df = self.perform_train_test_split(
+                df, self.config.train_test_split_ratio, self.config.seed
             )
 
             save_file_as_csv(train_df, self.config.train_file_path)
