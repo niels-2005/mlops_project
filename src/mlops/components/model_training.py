@@ -1,5 +1,4 @@
 from catboost import CatBoostClassifier
-from lightgbm import LGBMClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.neural_network import MLPClassifier
@@ -13,13 +12,7 @@ from mlops.config.model_training_config import ModelTrainingConfig
 from mlops.utils.common_utils import (create_directories, get_X_y,
                                       read_dataset, read_yaml_file,
                                       write_yaml_file)
-from mlops.utils.model_training_utils import (get_param_distributions,
-                                              get_sklearn_estimator,
-                                              get_training_save_paths,
-                                              perform_hyperparameter_tuning,
-                                              perform_threshold_tuning,
-                                              save_pipeline_objects,
-                                              save_tuning_summary)
+from mlops.utils.model_training_utils import get_training_results
 from src.logger.get_logger import get_logger
 
 
@@ -60,53 +53,6 @@ class ModelTraining:
             "sgd": SGDClassifier(random_state=self.config.seed),
         }
 
-    def get_best_estimators(self, X_train, y_train):
-        try:
-            best_estimators = {}
-            best_thresholds = {}
-            for model_name, model in self.models.items():
-                self.logger.info(f"Running randomized search for: {model_name}")
-                estimator = get_sklearn_estimator(model)
-                param_distributions = get_param_distributions(
-                    self.models_schema[model_name]["param_distributions"],
-                    self.feature_selection_schema,
-                )
-                random_search = perform_hyperparameter_tuning(
-                    self.random_search_schema,
-                    estimator,
-                    param_distributions,
-                    X_train,
-                    y_train,
-                    self.config.seed,
-                )
-
-                best_estimator = random_search.best_estimator_
-
-                best_treshold = perform_threshold_tuning(
-                    self.threshold_tuning_schema,
-                    best_estimator,
-                    X_train,
-                    y_train,
-                    self.config.seed,
-                )
-
-                training_save_paths = get_training_save_paths(self.config, model_name)
-                save_pipeline_objects(best_estimator, training_save_paths)
-
-                save_tuning_summary(
-                    random_search,
-                    best_treshold,
-                    X_train,
-                    training_save_paths["tuning_summary_path"],
-                )
-
-                best_estimators[model_name] = best_estimator
-                best_thresholds[model_name] = best_treshold
-            return best_estimators, best_thresholds
-        except Exception as e:
-            self.logger.error(f"Error occurred during best estimator search: {e}")
-            raise e
-
     def run_model_training(self):
         try:
             self.logger.info("Starting model training...")
@@ -115,8 +61,15 @@ class ModelTraining:
             )
             X_train, y_train = get_X_y(df_train, self.config.target_feature)
 
-            best_estimators, best_thresholds = self.get_best_estimators(
-                X_train, y_train
+            best_estimators, best_thresholds = get_training_results(
+                X_train,
+                y_train,
+                self.models,
+                self.models_schema,
+                self.feature_selection_schema,
+                self.random_search_schema,
+                self.threshold_tuning_schema,
+                self.config,
             )
 
             model_training_artifact = ModelTrainingArtifact(
@@ -128,5 +81,5 @@ class ModelTraining:
             self.logger.info("Model training completed.")
             return model_training_artifact
         except Exception as e:
-            self.logger.error(f"Error occurred during model training: {e}")
+            self.logger.exception(f"Error occurred during model training: {e}")
             raise e
