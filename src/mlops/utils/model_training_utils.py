@@ -122,7 +122,7 @@ def get_training_save_paths(config, model_dir):
         logger.info(f"Getting training save paths for model_dir: {model_dir}")
         return {
             "estimator_pkl_path": get_os_path(model_dir, config.estimator_pkl_path),
-            "model_pkl_path": get_os_path(model_dir, config.model_pkl_path),
+            "model_pkl_path": get_os_path(model_dir, config.classifier_pkl_path),
             "feature_selector_pkl_path": get_os_path(
                 model_dir, config.feature_selector_pkl_path
             ),

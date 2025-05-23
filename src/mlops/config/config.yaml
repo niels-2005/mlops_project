@@ -2,13 +2,16 @@ common:
   artifact_dir: "mlops_artifacts"
   best_run_dir: "best_run"
   runs_dir: "runs"
+  mlflow_uri: "http://localhost:5000"
   pipeline_steps_dir: "pipeline_steps"
   feature_binning_pkl_path: "feature_binning.pkl"
-  standard_scaler_pkl_path: "standard_scaler.pkl"
+  scaler_pkl_path: "scaler.pkl"
   feature_selector_pkl_path: "feature_selector.pkl"
-  model_pkl_path: "model.pkl"
+  classifier_pkl_path: "classifier.pkl"
   estimator_pkl_path: "estimator.pkl"
+  pipeline_pkl_path: "pipeline.pkl"
   run_config_save_path: "run_config.yaml"
+  best_model_summary_path: "best_model_summary.yaml"
   seed: 42
 
 data_ingestion:
@@ -56,7 +59,6 @@ model_training:
   catboost_dir: "catboost"
   svc_dir: "svc"
   mlp_dir: "mlp"
-  sgd_dir: "sgd"
   tuning_summary_path: "tuning_summary.yaml"
   target_feature: "target"
 
@@ -70,7 +72,11 @@ model_evaluation:
   catboost_dir: "catboost"
   svc_dir: "svc"
   mlp_dir: "mlp"
-  sgd_dir: "sgd"
   evaluation_summary_path: "evaluation_summary.yaml"
   best_model_summary_path: "best_model_summary.yaml"
   target_feature: "target"
+
+best_model_selector:
+  registered_model_name: "best_model"
+  input_example: [40, 1, 2, 140, 289, 0, 0, 172, 0, 0.0, 1]
+  output_example: 0

@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
 from src.logger.get_logger import get_logger
@@ -16,12 +17,27 @@ class FeatureBinning(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
+        X_copy = X.copy()
         for config in self.binning_config:
             column = config["column"]
             bins = config["bins"]
             labels = config["labels"]
-            X[column] = pd.cut(X[column], bins=bins, labels=labels)
-        return X
+            X_copy[column] = pd.cut(X_copy[column], bins=bins, labels=labels)
+        return X_copy
+
+
+class FeatureScaler(BaseEstimator, TransformerMixin):
+    def __init__(self, scaler, features):
+        self.scaler = scaler
+        self.features = features
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X_copy = X.copy()
+        X_copy[self.features] = self.scaler.transform(X_copy[self.features])
+        return X_copy
 
 
 def drop_null_values(df: pd.DataFrame, split: str):
@@ -87,10 +103,14 @@ def perform_feature_scaling(
         features = list(feature_scaling_schema["columns_to_scale"])
         logger.info(f"Performing feature scaling for columns: {features}")
         scaler = get_scaler(feature_scaling_schema["scaler_name"])
+
         train_df[features] = scaler.fit_transform(train_df[features])
-        test_df[features] = scaler.transform(test_df[features])
-        save_object(scaler, artifact_path)
-        save_object(scaler, inference_path)
+
+        feature_scaler = FeatureScaler(scaler, features)
+        test_df = feature_scaler.transform(test_df)
+
+        save_object(feature_scaler, artifact_path)
+        save_object(feature_scaler, inference_path)
         return train_df, test_df
     except Exception as e:
         logger.exception(

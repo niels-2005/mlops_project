@@ -1,8 +1,10 @@
+from mlops.components.best_model_selector import BestModelSelector
 from mlops.components.data_ingestion import DataIngestion
 from mlops.components.data_transformation import DataTransformation
 from mlops.components.data_validation import DataValidation
 from mlops.components.model_evaluation import ModelEvaluation
 from mlops.components.model_training import ModelTraining
+from mlops.config.best_model_selector_config import BestModelSelectorConfig
 from mlops.config.data_ingestion_config import DataIngestionConfig
 from mlops.config.data_transformation_config import DataTransformationConfig
 from mlops.config.data_validation_config import DataValidationConfig
@@ -38,7 +40,13 @@ def run_mlops_pipeline():
         model_evaluation = ModelEvaluation(
             model_training_artifact, model_evaluation_config
         )
-        model_evaluation.run_model_evaluation()
+        model_evaluation_artifact = model_evaluation.run_model_evaluation()
+        best_model_selector_config = BestModelSelectorConfig()
+        best_model_selector = BestModelSelector(
+            model_evaluation_artifact, best_model_selector_config
+        )
+        best_model_selector.run_best_model_selector()
+
     except Exception as e:
         logger.error(f"Error while running Pipeline: {e}")
         raise e

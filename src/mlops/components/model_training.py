@@ -34,7 +34,6 @@ class ModelTraining:
                 self.config.catboost_dir,
                 self.config.svc_dir,
                 self.config.mlp_dir,
-                self.config.sgd_dir,
             ]
         )
         self.schema = read_yaml_file(self.config.schema_read_path)
@@ -48,9 +47,8 @@ class ModelTraining:
             "random_forest": RandomForestClassifier(random_state=self.config.seed),
             "xgboost": XGBClassifier(seed=self.config.seed),
             "catboost": CatBoostClassifier(random_state=self.config.seed),
-            "svc": SVC(random_state=self.config.seed),
+            "svc": SVC(random_state=self.config.seed, probability=True),
             "mlp": MLPClassifier(random_state=self.config.seed),
-            "sgd": SGDClassifier(random_state=self.config.seed),
         }
 
     def run_model_training(self):

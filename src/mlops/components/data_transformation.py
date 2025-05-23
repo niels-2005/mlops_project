@@ -61,8 +61,8 @@ class DataTransformation:
                     self.feature_scaling_schema,
                     train_df,
                     test_df,
-                    self.config.standard_scaler_artifact_path,
-                    self.config.standard_scaler_inference_path,
+                    self.config.scaler_artifact_path,
+                    self.config.scaler_inference_path,
                 )
 
             save_file_as_csv(train_df, self.config.transformed_train_path)

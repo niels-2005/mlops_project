@@ -1,6 +1,7 @@
 import itertools
 
 import matplotlib.pyplot as plt
+import mlflow
 import numpy as np
 from sklearn.metrics import (confusion_matrix, fbeta_score, precision_score,
                              recall_score, roc_auc_score)
@@ -14,8 +15,7 @@ logger = get_logger()
 def make_confusion_matrix(
     y_true: np.ndarray,
     y_pred: np.ndarray,
-    save_folder: str,
-    threshold: bool = False,
+    save_path: str,
     classes: np.ndarray = None,
     figsize: tuple[int, int] = (10, 10),
     text_size: int = 15,
@@ -54,8 +54,6 @@ def make_confusion_matrix(
             )
 
         plt.tight_layout()
-        suffix = "threshold" if threshold else ""
-        save_path = f"{save_folder}/confusions_matrix_{suffix}.png"
         plt.savefig(save_path)
         plt.close()
         logger.info(f"Saved confusion matrix to {save_path}")
@@ -65,6 +63,7 @@ def make_confusion_matrix(
 
 
 def evaluate_single_model(
+    timestamp,
     metrics_to_compute_schema,
     estimator,
     X_test,
@@ -75,37 +74,65 @@ def evaluate_single_model(
 ):
     try:
         logger.info(f"Evaluating model: {model_name}")
+
         y_pred = estimator.predict(X_test)
         y_proba = estimator.predict_proba(X_test)[:, 1]
         y_pred_threshold = (y_proba >= threshold).astype(int)
-
-        eval_metrics = {
-            "estimator": estimator,
-            "roc_auc": float(roc_auc_score(y_test, y_proba)),
-            "model_name": model_name,
-            "threshold": threshold,
-        }
-
-        if metrics_to_compute_schema["f2_score"]:
-            eval_metrics["f2_score"] = fbeta_score(y_test, y_pred, beta=2)
-            eval_metrics["f2_score_threshold"] = fbeta_score(
-                y_test, y_pred_threshold, beta=2
+        mlflow.set_experiment(timestamp)
+        with mlflow.start_run(run_name=model_name):
+            logger.info(
+                f"Started MLflow run for model {model_name} with timestamp: {timestamp}"
             )
 
-        if metrics_to_compute_schema["recall"]:
-            eval_metrics["recall"] = recall_score(y_test, y_pred)
-            eval_metrics["recall_threshold"] = recall_score(y_test, y_pred_threshold)
+            mlflow.log_param("threshold", threshold)
 
-        if metrics_to_compute_schema["precision"]:
-            eval_metrics["precision"] = precision_score(y_test, y_pred)
-            eval_metrics["precision_threshold"] = precision_score(
-                y_test, y_pred_threshold
-            )
+            eval_metrics = {
+                "roc_auc": float(roc_auc_score(y_test, y_proba)),
+            }
 
-        if metrics_to_compute_schema["confusion_matrix"]:
-            make_confusion_matrix(y_test, y_pred, model_dir)
-            make_confusion_matrix(y_test, y_pred_threshold, model_dir, threshold=True)
+            if metrics_to_compute_schema["f2_score"]:
+                eval_metrics["f2_score"] = fbeta_score(y_test, y_pred, beta=2)
+                eval_metrics["f2_score_threshold"] = fbeta_score(
+                    y_test, y_pred_threshold, beta=2
+                )
 
+            if metrics_to_compute_schema["recall"]:
+                eval_metrics["recall"] = recall_score(y_test, y_pred)
+                eval_metrics["recall_threshold"] = recall_score(
+                    y_test, y_pred_threshold
+                )
+
+            if metrics_to_compute_schema["precision"]:
+                eval_metrics["precision"] = precision_score(y_test, y_pred)
+                eval_metrics["precision_threshold"] = precision_score(
+                    y_test, y_pred_threshold
+                )
+
+            mlflow.log_metrics(eval_metrics)
+
+            if metrics_to_compute_schema["confusion_matrix"]:
+                confusion_matrix_save_path = f"{model_dir}/confusion_matrix.png"
+                confusion_matrix_save_path_threshold = (
+                    f"{model_dir}/confusion_matrix_threshold.png"
+                )
+
+                make_confusion_matrix(y_test, y_pred, confusion_matrix_save_path)
+                make_confusion_matrix(
+                    y_test, y_pred_threshold, confusion_matrix_save_path_threshold
+                )
+
+                mlflow.log_artifact(
+                    confusion_matrix_save_path, artifact_path="confusion_matrices"
+                )
+                mlflow.log_artifact(
+                    confusion_matrix_save_path_threshold,
+                    artifact_path="confusion_matrices",
+                )
+
+        # add important informations to eval_metrics for later purpose.
+        eval_metrics["estimator"] = estimator
+        eval_metrics["model_name"] = model_name
+        eval_metrics["threshold"] = threshold
         return eval_metrics
     except Exception as e:
         logger.exception(f"Error during evaluation of model {model_name}: {e}")
@@ -172,7 +199,7 @@ def finalize_best_model(config, best_model_data):
         )
         save_object(
             best_model_data["estimator"].named_steps["classifier"],
-            config.model_pkl_path,
+            config.classifier_pkl_path,
         )
         del best_model_data["estimator"]
         write_yaml_file(
@@ -184,7 +211,7 @@ def finalize_best_model(config, best_model_data):
         raise e
 
 
-def find_best_model(
+def find_best_model_data(
     config, estimators, metrics_to_compute_schema, thresholds, X_test, y_test
 ):
     try:
@@ -202,6 +229,7 @@ def find_best_model(
         for model_name, estimator in estimators.items():
             model_dir = getattr(config, f"{model_name}_dir")
             eval_metrics = evaluate_single_model(
+                config.timestamp,
                 metrics_to_compute_schema,
                 estimator,
                 X_test,

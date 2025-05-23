@@ -20,8 +20,8 @@ class ModelEvaluationConfig(CommonConfig):
             self.current_artifact_dir,
             self.model_evaluation_config["best_model_summary_path"],
         )
-        self.model_pkl_path = get_os_path(
-            self.pipeline_steps_dir, self.common_config["model_pkl_path"]
+        self.classifier_pkl_path = get_os_path(
+            self.pipeline_steps_dir, self.common_config["classifier_pkl_path"]
         )
         self.feature_selector_pkl_path = get_os_path(
             self.pipeline_steps_dir,
@@ -48,7 +48,4 @@ class ModelEvaluationConfig(CommonConfig):
         )
         self.mlp_dir = get_os_path(
             self.model_evaluation_dir, self.model_evaluation_config["mlp_dir"]
-        )
-        self.sgd_dir = get_os_path(
-            self.model_evaluation_dir, self.model_evaluation_config["sgd_dir"]
         )

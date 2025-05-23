@@ -179,3 +179,5 @@ data
 logs
 test.ipynb
 catboost_info
+mlruns
+mlartifacts

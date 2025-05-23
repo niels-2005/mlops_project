@@ -10,7 +10,7 @@ class ModelTrainingConfig(CommonConfig):
         self.schema_read_path = self.model_training_config["schema_read_path"]
         self.tuning_summary_path = self.model_training_config["tuning_summary_path"]
         self.estimator_pkl_path = self.common_config["estimator_pkl_path"]
-        self.model_pkl_path = self.common_config["model_pkl_path"]
+        self.classifier_pkl_path = self.common_config["classifier_pkl_path"]
         self.feature_selector_pkl_path = self.common_config["feature_selector_pkl_path"]
         self.target_feature = self.model_training_config["target_feature"]
         self.model_training_dir = get_os_path(
@@ -37,7 +37,4 @@ class ModelTrainingConfig(CommonConfig):
         )
         self.mlp_dir = get_os_path(
             self.model_training_dir, self.model_training_config["mlp_dir"]
-        )
-        self.sgd_dir = get_os_path(
-            self.model_training_dir, self.model_training_config["sgd_dir"]
         )

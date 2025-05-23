@@ -1,9 +1,10 @@
+from mlops.artifacts.model_evaluation_artifact import ModelEvaluationArtifact
 from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
 from mlops.config.model_evaluation_config import ModelEvaluationConfig
 from mlops.utils.common_utils import (create_directories, get_X_y,
                                       read_dataset, read_yaml_file,
                                       write_yaml_file)
-from mlops.utils.model_evaluation_utils import find_best_model
+from mlops.utils.model_evaluation_utils import find_best_model_data
 from src.logger.get_logger import get_logger
 
 
@@ -25,7 +26,6 @@ class ModelEvaluation:
                 self.config.catboost_dir,
                 self.config.svc_dir,
                 self.config.mlp_dir,
-                self.config.sgd_dir,
             ]
         )
         self.schema = read_yaml_file(self.config.schema_read_path)
@@ -39,7 +39,7 @@ class ModelEvaluation:
             self.logger.info("Model Evaluation started.")
             df_test = read_dataset(self.model_training_artifact.transformed_test_path)
             X_test, y_test = get_X_y(df_test, self.config.target_feature)
-            best_model = find_best_model(
+            best_model_data = find_best_model_data(
                 self.config,
                 self.estimators,
                 self.metrics_to_compute_schema,
@@ -48,13 +48,14 @@ class ModelEvaluation:
                 y_test,
             )
 
-            # if not os.path.exists(self.config.best_run_dir):
-            #     destination_dir = os.path.join(
-            #         self.config.best_run_dir, self.config.timestamp
-            #     )
-            #     if not os.path.exists(destination_dir):
-            #         shutil.copytree(self.config.current_artifact_dir, destination_dir)
-
+            model_evaluation_artifact = ModelEvaluationArtifact(
+                best_f2_score=best_model_data["f2_score"],
+                best_recall_score=best_model_data["recall"],
+                best_precision_score=best_model_data["precision"],
+            )
+            self.logger.info(f"Model Evaluation returns: {model_evaluation_artifact}")
+            self.logger.info("Model evaluation completed.")
+            return model_evaluation_artifact
         except Exception as e:
             self.logger.error(f"Error occurred during model evaluation: {e}")
             raise e
