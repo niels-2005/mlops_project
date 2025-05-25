@@ -176,8 +176,8 @@ cython_debug/
 # common 
 mlops_artifacts 
 data 
-logs
 test.ipynb
 catboost_info
 mlruns
-mlartifacts
+mlartifacts 
+mlops_logs
