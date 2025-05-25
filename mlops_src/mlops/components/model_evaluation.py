@@ -5,7 +5,8 @@ from mlops.utils.common_utils import (create_directories, get_X_y,
                                       read_dataset, read_yaml_file,
                                       write_yaml_file)
 from mlops.utils.model_evaluation_utils import find_best_model_data
-from src.logger.get_logger import get_logger
+
+from mlops_src.logger.get_logger import get_logger
 
 
 class ModelEvaluation:

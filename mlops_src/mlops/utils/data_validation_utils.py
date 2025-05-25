@@ -1,7 +1,7 @@
 import pandas as pd
-
 from mlops.utils.common_utils import write_yaml_file
-from src.logger.get_logger import get_logger
+
+from mlops_src.logger.get_logger import get_logger
 
 logger = get_logger()
 

@@ -3,8 +3,8 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
-from src.logger.get_logger import get_logger
-from src.mlops.utils.common_utils import save_object
+from mlops_src.logger.get_logger import get_logger
+from mlops_src.mlops.utils.common_utils import save_object
 
 logger = get_logger()
 

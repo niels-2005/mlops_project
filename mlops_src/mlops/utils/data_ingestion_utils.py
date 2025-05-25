@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from src.logger.get_logger import get_logger
+from mlops_src.logger.get_logger import get_logger
 
 logger = get_logger()
 

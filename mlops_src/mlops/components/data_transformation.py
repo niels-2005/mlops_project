@@ -9,7 +9,8 @@ from mlops.utils.data_transformation_utils import (drop_duplicates,
                                                    drop_null_values,
                                                    perform_feature_binning,
                                                    perform_feature_scaling)
-from src.logger.get_logger import get_logger
+
+from mlops_src.logger.get_logger import get_logger
 
 
 class DataTransformation:

@@ -14,7 +14,7 @@ def get_logger(name="ml_logger", config_path="src/logger/logging_config.yaml"):
     if _logger is None:
         # logger configuration
         log_folder = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
-        logs_dir = os.path.join(os.getcwd(), "logs", log_folder)
+        logs_dir = os.path.join(os.getcwd(), "mlops_logs", log_folder)
         os.makedirs(logs_dir, exist_ok=True)
         log_file_path = os.path.join(logs_dir, f"{log_folder}.log")
 
