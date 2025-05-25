@@ -1,4 +1,5 @@
 import pandas as pd
+
 from mlops.artifacts.data_ingestion_artifact import DataIngestionArtifact
 from mlops.artifacts.data_validation_artifact import DataValidationArtifact
 from mlops.config.data_validation_config import DataValidationConfig
@@ -6,8 +7,7 @@ from mlops.utils.common_utils import (create_directories, read_dataset,
                                       read_yaml_file, save_file_as_csv,
                                       write_yaml_file)
 from mlops.utils.data_validation_utils import generate_validation_report
-
-from mlops_src.logger.get_logger import get_logger
+from src.logger.get_logger import get_logger
 
 
 class DataValidation:

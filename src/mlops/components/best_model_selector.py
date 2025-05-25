@@ -3,8 +3,7 @@ import os
 from mlops.artifacts.model_evaluation_artifact import ModelEvaluationArtifact
 from mlops.config.best_model_selector_config import BestModelSelectorConfig
 from mlops.utils.best_model_selector_utils import compare_models, promote_run
-
-from mlops_src.logger.get_logger import get_logger
+from src.logger.get_logger import get_logger
 
 
 class BestModelSelector:

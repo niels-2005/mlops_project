@@ -3,8 +3,7 @@ from mlops.config.data_ingestion_config import DataIngestionConfig
 from mlops.utils.common_utils import (create_directories, read_dataset,
                                       save_file_as_csv, write_yaml_file)
 from mlops.utils.data_ingestion_utils import perform_train_test_split
-
-from mlops_src.logger.get_logger import get_logger
+from src.logger.get_logger import get_logger
 
 
 class DataIngestion:

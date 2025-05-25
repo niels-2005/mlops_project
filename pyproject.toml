@@ -18,5 +18,5 @@ dependencies = []
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-where = ["mlops_src"]
-include = ["mlops_src"]
+where = ["src"]
+include = ["src"]

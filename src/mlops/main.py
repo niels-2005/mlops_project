@@ -10,8 +10,7 @@ from mlops.config.data_transformation_config import DataTransformationConfig
 from mlops.config.data_validation_config import DataValidationConfig
 from mlops.config.model_evaluation_config import ModelEvaluationConfig
 from mlops.config.model_training_config import ModelTrainingConfig
-
-from mlops_src.logger.get_logger import get_logger
+from src.logger.get_logger import get_logger
 
 logger = get_logger()
 

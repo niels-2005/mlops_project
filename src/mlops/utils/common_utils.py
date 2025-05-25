@@ -4,7 +4,7 @@ import joblib
 import pandas as pd
 import yaml
 
-from mlops_src.logger.get_logger import get_logger
+from src.logger.get_logger import get_logger
 
 logger = get_logger()
 

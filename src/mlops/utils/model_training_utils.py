@@ -1,11 +1,11 @@
-from mlops.utils.common_utils import get_os_path, save_object, write_yaml_file
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.metrics import fbeta_score, make_scorer
 from sklearn.model_selection import (RandomizedSearchCV,
                                      TunedThresholdClassifierCV)
 from sklearn.pipeline import Pipeline
 
-from mlops_src.logger.get_logger import get_logger
+from mlops.utils.common_utils import get_os_path, save_object, write_yaml_file
+from src.logger.get_logger import get_logger
 
 logger = get_logger()
 
