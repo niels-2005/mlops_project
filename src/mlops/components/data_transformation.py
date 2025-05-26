@@ -1,3 +1,4 @@
+from logger.get_logger import get_logger
 from mlops.artifacts.data_transformation_artifact import \
     DataTransformationArtifact
 from mlops.artifacts.data_validation_artifact import DataValidationArtifact
@@ -9,7 +10,6 @@ from mlops.utils.data_transformation_utils import (drop_duplicates,
                                                    drop_null_values,
                                                    perform_feature_binning,
                                                    perform_feature_scaling)
-from src.logger.get_logger import get_logger
 
 
 class DataTransformation:

@@ -6,8 +6,8 @@ import numpy as np
 from sklearn.metrics import (confusion_matrix, fbeta_score, precision_score,
                              recall_score, roc_auc_score)
 
+from logger.get_logger import get_logger
 from mlops.utils.common_utils import get_os_path, save_object, write_yaml_file
-from src.logger.get_logger import get_logger
 
 logger = get_logger()
 

@@ -5,6 +5,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
+from logger.get_logger import get_logger
 from mlops.artifacts.data_transformation_artifact import \
     DataTransformationArtifact
 from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
@@ -13,7 +14,6 @@ from mlops.utils.common_utils import (create_directories, get_X_y,
                                       read_dataset, read_yaml_file,
                                       write_yaml_file)
 from mlops.utils.model_training_utils import get_training_results
-from src.logger.get_logger import get_logger
 
 
 class ModelTraining:

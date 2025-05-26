@@ -3,8 +3,8 @@ import shutil
 import mlflow
 from sklearn.pipeline import Pipeline
 
+from logger.get_logger import get_logger
 from mlops.utils.common_utils import load_object, read_yaml_file, save_object
-from src.logger.get_logger import get_logger
 
 logger = get_logger()
 
