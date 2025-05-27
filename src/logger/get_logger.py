@@ -6,6 +6,7 @@ from datetime import datetime
 import yaml
 
 _logger = None
+_backend_logger = None
 
 
 def get_logger(name="ml_logger", config_path="src/logger/logging_config.yaml"):
@@ -28,3 +29,25 @@ def get_logger(name="ml_logger", config_path="src/logger/logging_config.yaml"):
         _logger = logging.getLogger(name)
 
     return _logger
+
+
+def get_backend_logger(
+    name="backend_logger", config_path="src/logger/logging_config.yaml"
+):
+    global _backend_logger
+
+    if _backend_logger is None:
+        log_folder = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
+        logs_dir = os.path.join(os.getcwd(), "backend_logs", log_folder)
+        os.makedirs(logs_dir, exist_ok=True)
+        log_file_path = os.path.join(logs_dir, f"{log_folder}.log")
+
+        with open(config_path, "r") as f:
+            config = yaml.safe_load(f)
+
+        # replace log file
+        config["handlers"]["file_handler"]["filename"] = log_file_path
+
+        logging.config.dictConfig(config)
+        _backend_logger = logging.getLogger(name)
+    return _backend_logger

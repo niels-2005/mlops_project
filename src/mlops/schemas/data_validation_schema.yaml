@@ -1,13 +1,13 @@
 columns:
   - age: int64
   - sex: int64
-  - chest pain type: int64
-  - resting bp s: int64
+  - chest_pain_type: int64
+  - resting_bp_s: int64
   - cholesterol: int64
-  - fasting blood sugar: int64
-  - resting ecg: int64
-  - max heart rate: int64
-  - exercise angina: int64
+  - fasting_blood_sugar: int64
+  - resting_ecg: int64
+  - max_heart_rate: int64
+  - exercise_angina: int64
   - oldpeak: float64
-  - ST slope: int64
+  - st_slope: int64
   - target: int64

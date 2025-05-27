@@ -6,9 +6,9 @@ feature_scaling:
   scaler_name_options: ["standard_scaler", "min_max_scaler", "robust_scaler"]
   scaler_name: "standard_scaler"
   columns_to_scale:
-    - resting bp s
+    - resting_bp_s
     - cholesterol
-    - max heart rate
+    - max_heart_rate
     - oldpeak
 
 feature_binning:
