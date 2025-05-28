@@ -1,4 +1,7 @@
-TESTS SCHREIBEN + Funktionen + Docstrings
+# Frontend machen + Backend verbinden 
+
+wennn alles funnzt dann docker compose und ordentlichj machen.
 
 
-abschlussbericht anfangen mit entwürfen.
+
+kill $(lsof -t -i:8000)

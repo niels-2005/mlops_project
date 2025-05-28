@@ -1,9 +1,7 @@
 import pandas as pd
-from fastapi import Depends
 from sklearn.pipeline import Pipeline
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.db.main import get_session
 from backend.prediction.models import Predictions
 from backend.prediction.schemas import PredictionInput
 
@@ -23,7 +21,7 @@ class PredictionService:
 
         output_name = "Heart Disease" if output == 1 else "No Heart Disease"
 
-        self.save_prediction_data(
+        await self.save_prediction_data(
             input_features, output_name, output, output_proba, session
         )
         return output, output_proba

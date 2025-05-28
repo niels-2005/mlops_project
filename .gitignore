@@ -181,3 +181,4 @@ catboost_info
 mlruns
 mlartifacts 
 mlops_logs
+backend_logs

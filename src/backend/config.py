@@ -1,10 +1,16 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+# DATABSE_URL wird aus .env Datei gezogen!
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://user:password@postgres:5432/mydb"
-    JWT_SECRET: str = "e698218fbf1d9d46b06a6c1aa41b3124"
-    JWT_ALGORITHM: str = "HS256"
+    DATABASE_URL: str
+    JWT_SECRET: str
+    JWT_ALGORITHM: str
+    REDIS_HOST: str
+    REDIS_PORT: int
+
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
+# aufrufen um importieren zu können
 Config = Settings()

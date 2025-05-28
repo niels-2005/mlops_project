@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from backend.auth.models import User
 from backend.config import Config
 from backend.prediction.models import Predictions
 

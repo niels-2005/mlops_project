@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from .auth.routes import auth_router
 from .db.main import init_db
 from .middleware import register_middleware
 from .prediction.routes import prediction_router
@@ -49,3 +50,4 @@ register_middleware(app)
 app.include_router(
     prediction_router, prefix=f"{version_prefix}/predict", tags=["predict"]
 )
+app.include_router(auth_router, prefix=f"{version_prefix}/auth", tags=["auth"])
