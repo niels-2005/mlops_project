@@ -78,6 +78,7 @@ def evaluate_single_model(
         y_pred = estimator.predict(X_test)
         y_proba = estimator.predict_proba(X_test)[:, 1]
         y_pred_threshold = (y_proba >= threshold).astype(int)
+        mlflow.set_tracking_uri("http://mlflow:5000")
         mlflow.set_experiment(timestamp)
         with mlflow.start_run(run_name=model_name):
             logger.info(

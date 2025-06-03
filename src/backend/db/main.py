@@ -8,7 +8,7 @@ from backend.config import Config
 from backend.prediction.models import Predictions
 
 async_engine = create_async_engine(
-    url="postgresql+asyncpg://niels:12345@localhost/mlops",
+    url=Config.DATABASE_URL,
     echo=True,
 )
 

@@ -4,6 +4,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.prediction.models import Predictions
 from backend.prediction.schemas import PredictionInput
+from backend.prediction.utils import read_yaml_file
 
 
 class PredictionService:
@@ -16,8 +17,10 @@ class PredictionService:
         input_features = prediction_input.model_dump()
         df = pd.DataFrame([input_features])
 
-        output = int(pipeline.predict(df)[0])
         output_proba = pipeline.predict_proba(df)[0][1]
+
+        threshold = read_yaml_file()
+        output = 1 if output_proba > threshold else 0
 
         output_name = "Heart Disease" if output == 1 else "No Heart Disease"
 

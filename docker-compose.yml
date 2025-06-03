@@ -1,18 +1,56 @@
-version: '3.9'
+version: "3.9"
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow
     ports:
-      - "5432:5432"
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+    command: mlflow ui --host 0.0.0.0 --port 5000 --default-artifact-root /mlflow/mlruns
+  
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data 
+    depends_on:
+      - mlflow
+
+  redis:
+    image: redis:7
+    ports:
+      - "6380:6379" 
+    depends_on:
+      - db
+
+  backend:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  frontend:
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+  
+
 
 volumes:
   postgres_data:

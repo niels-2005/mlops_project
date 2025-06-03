@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from src.mlops.main import run_mlops_pipeline
+
 from .auth.routes import auth_router
 from .db.main import init_db
 from .middleware import register_middleware
@@ -11,6 +13,7 @@ from .prediction.routes import prediction_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await run_mlops_pipeline()
     await init_db()
     yield
 

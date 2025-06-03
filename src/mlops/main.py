@@ -15,7 +15,7 @@ from mlops.config.model_training_config import ModelTrainingConfig
 logger = get_logger()
 
 
-def run_mlops_pipeline():
+async def run_mlops_pipeline():
     try:
         logger.info("Starting MLOps Pipeline")
         data_ingestion_config = DataIngestionConfig()
@@ -52,5 +52,5 @@ def run_mlops_pipeline():
         raise e
 
 
-if __name__ == "__main__":
-    run_mlops_pipeline()
+# if __name__ == "__main__":
+#     run_mlops_pipeline()

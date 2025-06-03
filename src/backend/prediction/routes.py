@@ -7,8 +7,6 @@ from backend.prediction.schemas import PredictionInput, PredictionResponseData
 from backend.prediction.service import PredictionService
 from backend.prediction.utils import load_pipeline
 
-pipeline = load_pipeline()
-
 prediction_router = APIRouter()
 prediction_service = PredictionService()
 
@@ -24,6 +22,7 @@ async def make_prediction(
     role_checker: bool = Depends(role_checker),
     token_details: dict = Depends(AccessTokenBearer()),
 ) -> PredictionResponseData:
+    pipeline = load_pipeline()
     output, output_proba = await prediction_service.get_prediction(
         pipeline, prediction_input, session
     )
