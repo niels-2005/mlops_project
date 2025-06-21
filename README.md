@@ -2,12 +2,12 @@
 
 1. Clone the repository:  
 ```bash
-git clone <repository-url>
+git clone git@github.com:niels-2005/mlops_project.git
 ```
 
 2. Navigate into the project directory:  
 ```bash
-cd <project-directory>
+cd mlops_project/
 ```
 
 3. Build and start the services using Docker Compose:  

@@ -128,7 +128,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -175,7 +174,6 @@ cython_debug/
 
 # common 
 mlops_artifacts 
-data 
 test.ipynb
 catboost_info
 mlruns
