@@ -7,6 +7,20 @@ from sqlmodel import Column, Field, Relationship, SQLModel
 
 
 class User(SQLModel, table=True):
+    """
+    ORM model representing a user account.
+
+    Attributes:
+        uid (UUID): Unique user identifier, primary key.
+        role (str): User role, defaults to 'user'.
+        username (str): Username.
+        first_name (str): User's first name.
+        last_name (str): User's last name.
+        email (str): User email address.
+        password_hash (str): Hashed user password.
+        created_at (datetime): Account creation timestamp.
+    """
+
     __tablename__ = "user_accounts"
 
     uid: uuid.UUID = Field(

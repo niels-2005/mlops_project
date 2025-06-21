@@ -14,12 +14,17 @@ async_engine = create_async_engine(
 
 
 async def init_db() -> None:
+    """
+    Initialize the database by creating all tables defined in SQLModel metadata.
+    """
     async with async_engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
 
-# holt aktuelle db session
 async def get_session():
+    """
+    Async generator that yields a SQLAlchemy AsyncSession for DB operations.
+    """
     Session = sessionmaker(
         bind=async_engine, class_=AsyncSession, expire_on_commit=False
     )

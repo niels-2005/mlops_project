@@ -5,6 +5,10 @@ from .common_config import CommonConfig
 
 class BestModelSelectorConfig(CommonConfig):
     def __init__(self):
+        """
+        Configuration for best model selection.
+        Includes paths and settings for MLflow registration and pipeline artifacts.
+        """
         super().__init__()
         self.best_model_selector_config = self.config["best_model_selector"]
         self.registered_model_name = self.best_model_selector_config[

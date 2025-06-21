@@ -12,6 +12,13 @@ from mlops.utils.data_ingestion_utils import perform_train_test_split
 
 class DataIngestion:
     def __init__(self, config: DataIngestionConfig):
+        """
+        Initialize DataIngestion with configuration.
+        Create necessary directories and save config as YAML.
+
+        Args:
+            config (DataIngestionConfig): Configuration for data ingestion.
+        """
         self.config = config
         self.logger = get_logger()
         create_directories(
@@ -28,6 +35,20 @@ class DataIngestion:
         write_yaml_file(self.config.run_config_save_path, self.config.config)
 
     def run_data_ingestion(self) -> DataIngestionArtifact:
+        """
+        Run the data ingestion pipeline:
+        - read dataset from source
+        - save raw data
+        - split into train and test sets
+        - save train and test data files
+        - return artifact with train and test file paths
+
+        Returns:
+            DataIngestionArtifact: Paths to the train and test datasets.
+
+        Raises:
+            Exception: If any error occurs during data ingestion.
+        """
         try:
             self.logger.info("Data Ingestion started.")
             df = read_dataset(self.config.data_path)

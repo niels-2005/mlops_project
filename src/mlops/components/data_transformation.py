@@ -23,6 +23,14 @@ class DataTransformation:
         data_validation_artifact: DataValidationArtifact,
         config: DataTransformationConfig,
     ):
+        """
+        Initialize DataTransformation with validation artifact and config.
+        Create required directories and load schema.
+
+        Args:
+            data_validation_artifact (DataValidationArtifact): Paths of validated data.
+            config (DataTransformationConfig): Configuration for transformation.
+        """
         self.data_validation_artifact = data_validation_artifact
         self.config = config
         self.logger = get_logger()
@@ -39,6 +47,20 @@ class DataTransformation:
         self.feature_scaling_schema = self.schema["feature_scaling"]
 
     def run_data_transformation(self):
+        """
+        Run data transformation:
+        - read validated train and test data
+        - drop nulls and duplicates if configured
+        - perform feature binning and scaling if enabled
+        - save transformed datasets
+        - return transformation artifact
+
+        Returns:
+            DataTransformationArtifact: Paths of transformed datasets.
+
+        Raises:
+            Exception: For errors during transformation.
+        """
         try:
             self.logger.info("Data Transformation started.")
             train_df = read_dataset(self.data_validation_artifact.validated_train_path)

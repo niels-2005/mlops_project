@@ -16,6 +16,21 @@ class PredictionService:
         prediction_input: PredictionInput,
         session: AsyncSession,
     ):
+        """
+        Runs inference on input data using the provided pipeline, applies
+        thresholding to determine output class, and persists prediction data.
+
+        Args:
+            pipeline (Pipeline): Loaded ML pipeline for inference.
+            prediction_input (PredictionInput): Input features for prediction.
+            session (AsyncSession): DB session for saving results.
+
+        Returns:
+            Tuple[int, float]: Predicted class label and probability.
+
+        Raises:
+            Exception: Propagates exceptions during prediction or saving.
+        """
         input_features = prediction_input.model_dump()
         df = pd.DataFrame([input_features])
 
@@ -41,6 +56,19 @@ class PredictionService:
         output_proba,
         session: AsyncSession,
     ):
+        """
+        Saves a new prediction record to the database.
+
+        Args:
+            input_features (Dict): Features used for prediction.
+            output_name (str): Predicted label name.
+            output (int): Predicted class.
+            output_proba (float): Prediction probability.
+            session (AsyncSession): Database session.
+
+        Raises:
+            Exception: Propagates exceptions during DB commit.
+        """
         new_prediction = Predictions(
             input_features=input_features,
             output_name=output_name,

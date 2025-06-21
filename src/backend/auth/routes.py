@@ -30,6 +30,19 @@ REFRESH_TOKEN_EXPIRY = 2
 async def create_user_account(
     user_data: UserCreateModel, session: AsyncSession = Depends(get_session)
 ):
+    """
+    Register a new user account.
+
+    Args:
+        user_data (UserCreateModel): Data required to create a user.
+        session (AsyncSession): Database session dependency.
+
+    Raises:
+        HTTPException: If user with the given email already exists.
+
+    Returns:
+        UserModel: The created user.
+    """
     email = user_data.email
 
     user_exists = await user_service.user_exists(email, session)
@@ -47,6 +60,19 @@ async def create_user_account(
 async def login_users(
     login_data: UserLoginModel, session: AsyncSession = Depends(get_session)
 ):
+    """
+    Authenticate user and return access and refresh tokens on success.
+
+    Args:
+        login_data (UserLoginModel): User login credentials.
+        session (AsyncSession): Database session dependency.
+
+    Raises:
+        HTTPException: If email or password is invalid.
+
+    Returns:
+        JSONResponse: Contains access token, refresh token, and user info.
+    """
     email = login_data.email
     password = login_data.password
 
@@ -85,7 +111,15 @@ async def login_users(
 
 @auth_router.get("/logout")
 async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
+    """
+    Revoke (invalidate) the current access token by adding its JTI to the blocklist.
 
+    Args:
+        token_details (dict): Decoded access token details injected by dependency.
+
+    Returns:
+        JSONResponse: Confirmation message of logout success.
+    """
     jti = token_details["jti"]
 
     await add_jti_to_blocklist(jti)
@@ -97,6 +131,18 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
 
 @auth_router.get("/refresh_token")
 async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer())):
+    """
+    Generate a new access token using a valid refresh token.
+
+    Args:
+        token_details (dict): Decoded refresh token details injected by dependency.
+
+    Raises:
+        HTTPException: If the refresh token is expired or invalid.
+
+    Returns:
+        JSONResponse: Contains the new access token.
+    """
     expiry_timestamp = token_details["exp"]
 
     if datetime.fromtimestamp(expiry_timestamp) > datetime.now():
@@ -113,4 +159,14 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
 async def get_current_user(
     user=Depends(get_current_user), role_checker: bool = Depends(role_checker)
 ):
+    """
+    Retrieve the current authenticated user's information.
+
+    Args:
+        user (User): Current user injected by dependency.
+        role_checker (bool): Role-based access control check.
+
+    Returns:
+        UserModel: The current authenticated user.
+    """
     return user

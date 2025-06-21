@@ -9,6 +9,10 @@ class CommonConfig:
         config_path="src/mlops/config/config.yaml",
         timestamp=datetime.now().strftime("%m_%d_%Y_%H_%M_%S"),
     ):
+        """
+        Base configuration for the MLOps pipeline.
+        Loads common settings from YAML and provides paths and timestamp.
+        """
         self.config = read_yaml_file(config_path)
         self.timestamp = timestamp
         self.common_config = self.config["common"]

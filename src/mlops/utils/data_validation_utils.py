@@ -7,6 +7,20 @@ logger = get_logger()
 
 
 def generate_validation_report(df: pd.DataFrame, column_schema, file_path: str) -> None:
+    """
+    Generate and save validation report for dataframe columns.
+
+    Args:
+        df (pd.DataFrame): Data to validate.
+        column_schema (dict): Expected column data types.
+        file_path (str): Path to save the report.
+
+    Returns:
+        bool: Validation status.
+
+    Raises:
+        Exception: If generation or saving fails.
+    """
     try:
         logger.info(f"Generating Validation Report for: {file_path}")
         validation_results, validation_status = get_validation_results(
@@ -22,6 +36,19 @@ def generate_validation_report(df: pd.DataFrame, column_schema, file_path: str) 
 
 
 def get_validation_results(df: pd.DataFrame, column_schema):
+    """
+    Validate dataframe columns against expected schema.
+
+    Args:
+        df (pd.DataFrame): Dataframe to check.
+        column_schema (dict): Expected column names and types.
+
+    Returns:
+        tuple: List of validation results and overall validation status.
+
+    Raises:
+        Exception: If validation fails.
+    """
     try:
         logger.info("Generating Validation Results.")
         validation_status = True
@@ -53,6 +80,17 @@ def get_validation_results(df: pd.DataFrame, column_schema):
 
 
 def save_validation_report(validation_results, validation_status, file_path):
+    """
+    Save validation results and status to YAML file.
+
+    Args:
+        validation_results (list): Validation details per column.
+        validation_status (bool): Overall validation status.
+        file_path (str): Destination file path.
+
+    Raises:
+        Exception: If saving fails.
+    """
     try:
         logger.info(f"Saving validation report at: {file_path}")
         write_yaml_file(

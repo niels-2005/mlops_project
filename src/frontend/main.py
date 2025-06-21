@@ -23,7 +23,7 @@ def main_page():
         if st.button("Login"):
             navigate_to("login")
     with col2:
-        if st.button("Signup"):
+        if st.button("Registrieren"):
             navigate_to("signup")
 
 

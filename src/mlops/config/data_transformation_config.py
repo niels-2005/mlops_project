@@ -5,6 +5,10 @@ from .common_config import CommonConfig
 
 class DataTransformationConfig(CommonConfig):
     def __init__(self):
+        """
+        Configuration for data transformation.
+        Contains paths for schema, preprocessors, and transformed datasets.
+        """
         super().__init__()
         self.data_transformation_config = self.config["data_transformation"]
         self.schema_read_path = self.data_transformation_config["schema_read_path"]

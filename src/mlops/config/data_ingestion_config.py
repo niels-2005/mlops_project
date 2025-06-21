@@ -5,6 +5,10 @@ from .common_config import CommonConfig
 
 class DataIngestionConfig(CommonConfig):
     def __init__(self):
+        """
+        Configuration for data ingestion.
+        Defines paths for raw data, ingestion outputs, and train/test splits.
+        """
         super().__init__()
         self.data_ingestion_config = self.config["data_ingestion"]
         self.data_path = self.data_ingestion_config["data_path"]

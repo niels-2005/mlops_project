@@ -12,6 +12,13 @@ class BestModelSelector:
         model_evaluation_artifact: ModelEvaluationArtifact,
         config: BestModelSelectorConfig,
     ):
+        """
+        Initialize BestModelSelector with evaluation results and config.
+
+        Args:
+            model_evaluation_artifact (ModelEvaluationArtifact): Evaluation scores of the current model.
+            config (BestModelSelectorConfig): Configuration for model promotion and paths.
+        """
         self.model_evaluation_artifact = model_evaluation_artifact
         self.config = config
         self.logger = get_logger()
@@ -35,6 +42,15 @@ class BestModelSelector:
         }
 
     def run_best_model_selector(self):
+        """
+        Run the best model selection process:
+        - If no previous best model exists, promote current model.
+        - Else, compare current model with best model.
+        - Promote current model if it outperforms the best.
+
+        Raises:
+            Exception: If any error occurs during model selection.
+        """
         try:
             self.logger.info("Best Model Selection started.")
             if not os.path.exists(self.best_run_dir):

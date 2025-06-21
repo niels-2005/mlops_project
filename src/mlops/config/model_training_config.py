@@ -5,6 +5,10 @@ from .common_config import CommonConfig
 
 class ModelTrainingConfig(CommonConfig):
     def __init__(self):
+        """
+        Configuration for model training.
+        Holds paths for training outputs, model artifacts, and tuning summaries.
+        """
         super().__init__()
         self.model_training_config = self.config["model_training"]
         self.schema_read_path = self.model_training_config["schema_read_path"]

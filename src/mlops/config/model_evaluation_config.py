@@ -5,6 +5,10 @@ from .common_config import CommonConfig
 
 class ModelEvaluationConfig(CommonConfig):
     def __init__(self):
+        """
+        Configuration for model evaluation.
+        Defines paths for evaluation results, best models, and related artifacts.
+        """
         super().__init__()
         self.model_evaluation_config = self.config["model_evaluation"]
         self.schema_read_path = self.model_evaluation_config["schema_read_path"]

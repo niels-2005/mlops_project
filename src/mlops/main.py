@@ -16,6 +16,13 @@ logger = get_logger()
 
 
 async def run_mlops_pipeline():
+    """
+    Runs the entire MLOps pipeline asynchronously, including data ingestion, validation,
+    transformation, training, evaluation, and best model selection.
+
+    Raises:
+        Exception: Propagates exceptions during pipeline execution.
+    """
     try:
         logger.info("Starting MLOps Pipeline")
         data_ingestion_config = DataIngestionConfig()

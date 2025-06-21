@@ -24,6 +24,22 @@ async def make_prediction(
     role_checker: bool = Depends(role_checker),
     token_details: dict = Depends(AccessTokenBearer()),
 ) -> PredictionResponseData:
+    """
+    Handles prediction requests by loading the pipeline if necessary,
+    running inference, and returning prediction results.
+
+    Args:
+        prediction_input (PredictionInput): Input data for prediction.
+        session (AsyncSession): Database session for saving prediction.
+        role_checker (bool): Authorization dependency.
+        token_details (dict): Authentication token info.
+
+    Returns:
+        PredictionResponseData: Contains prediction label and probability.
+
+    Raises:
+        Exception: Propagates exceptions during prediction or DB operations.
+    """
     global prediction_pipeline
     if prediction_pipeline is None:
         prediction_pipeline = load_pipeline()

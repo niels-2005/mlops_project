@@ -5,6 +5,10 @@ from .common_config import CommonConfig
 
 class DataValidationConfig(CommonConfig):
     def __init__(self):
+        """
+        Configuration for data validation.
+        Includes paths for schema, validation reports, and validated/invalidated data.
+        """
         super().__init__()
         self.data_validation_config = self.config["data_validation"]
         self.schema_read_path = self.data_validation_config["schema_read_path"]

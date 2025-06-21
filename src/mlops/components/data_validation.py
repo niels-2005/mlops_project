@@ -20,6 +20,14 @@ class DataValidation:
         data_ingestion_artifact: DataIngestionArtifact,
         config: DataValidationConfig,
     ):
+        """
+        Initialize DataValidation with ingestion artifact and config.
+        Create required directories and load schema.
+
+        Args:
+            data_ingestion_artifact (DataIngestionArtifact): Paths of ingested data.
+            config (DataValidationConfig): Configuration for validation process.
+        """
         self.data_ingestion_artifact = data_ingestion_artifact
         self.config = config
         self.logger = get_logger()
@@ -38,6 +46,20 @@ class DataValidation:
         }
 
     def run_data_validation(self) -> DataValidationArtifact:
+        """
+        Run data validation:
+        - read train and test datasets
+        - generate validation reports
+        - save validated or invalidated data accordingly
+        - return validation artifact
+
+        Returns:
+            DataValidationArtifact: Paths of validated datasets.
+
+        Raises:
+            ValueError: If validation fails.
+            Exception: For other errors during validation.
+        """
         try:
             self.logger.info("Data Validation started.")
             train_df = read_dataset(self.data_ingestion_artifact.train_file_path)
