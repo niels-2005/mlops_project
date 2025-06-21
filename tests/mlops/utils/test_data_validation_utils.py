@@ -2,9 +2,11 @@ import pandas as pd
 import pytest
 
 from mlops.utils.common_utils import write_yaml_file
-from mlops.utils.data_validation_utils import (generate_validation_report,
-                                               get_validation_results,
-                                               save_validation_report)
+from mlops.utils.data_validation_utils import (
+    generate_validation_report,
+    get_validation_results,
+    save_validation_report,
+)
 
 
 def test_get_validation_results_success():

@@ -1,8 +1,10 @@
 from sklearn.dummy import DummyClassifier
 
-from mlops.utils.model_training_utils import (get_model_param_distributions,
-                                              get_scoring_function,
-                                              get_sklearn_estimator)
+from mlops.utils.model_training_utils import (
+    get_model_param_distributions,
+    get_scoring_function,
+    get_sklearn_estimator,
+)
 
 
 def test_get_sklearn_estimator_returns_pipeline():

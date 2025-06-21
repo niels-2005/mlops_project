@@ -3,10 +3,17 @@ import os
 import pandas as pd
 import pytest
 
-from mlops.utils.common_utils import (create_directories, get_os_path, get_X_y,
-                                      load_object, read_dataset,
-                                      read_yaml_file, save_file_as_csv,
-                                      save_object, write_yaml_file)
+from mlops.utils.common_utils import (
+    create_directories,
+    get_os_path,
+    get_X_y,
+    load_object,
+    read_dataset,
+    read_yaml_file,
+    save_file_as_csv,
+    save_object,
+    write_yaml_file,
+)
 
 
 def test_write_and_read_yaml(tmp_path):

@@ -6,13 +6,16 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
 from logger.get_logger import get_logger
-from mlops.artifacts.data_transformation_artifact import \
-    DataTransformationArtifact
+from mlops.artifacts.data_transformation_artifact import DataTransformationArtifact
 from mlops.artifacts.model_training_artifact import ModelTrainingArtifact
 from mlops.config.model_training_config import ModelTrainingConfig
-from mlops.utils.common_utils import (create_directories, get_X_y,
-                                      read_dataset, read_yaml_file,
-                                      write_yaml_file)
+from mlops.utils.common_utils import (
+    create_directories,
+    get_X_y,
+    read_dataset,
+    read_yaml_file,
+    write_yaml_file,
+)
 from mlops.utils.model_training_utils import get_training_results
 
 

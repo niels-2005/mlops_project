@@ -7,7 +7,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./mlruns:/mlflow/mlruns
+      - ./mlruns:/app/mlruns
     command: mlflow ui --host 0.0.0.0 --port 5000 --default-artifact-root /mlflow/mlruns
   
   db:
@@ -39,7 +39,9 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
+      - redis 
+    volumes:
+      - ./mlops_artifacts:/app/mlops_artifacts
 
   frontend:
     build:
@@ -50,7 +52,19 @@ services:
     depends_on:
       - backend
   
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=meinpasswort
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - frontend
+
 
 
 volumes:
   postgres_data:
+  grafana_data:

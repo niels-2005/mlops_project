@@ -5,8 +5,12 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.auth.dependencies import (AccessTokenBearer, RefreshTokenBearer,
-                                       RoleChecker, get_current_user)
+from backend.auth.dependencies import (
+    AccessTokenBearer,
+    RefreshTokenBearer,
+    RoleChecker,
+    get_current_user,
+)
 from backend.auth.schemas import UserCreateModel, UserLoginModel, UserModel
 from backend.auth.service import UserService
 from backend.auth.utils import create_access_token, verify_password

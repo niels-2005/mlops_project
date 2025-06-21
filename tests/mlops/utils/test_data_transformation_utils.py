@@ -1,9 +1,11 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
-from mlops.utils.data_transformation_utils import (drop_duplicates,
-                                                   drop_null_values,
-                                                   get_scaler)
+from mlops.utils.data_transformation_utils import (
+    drop_duplicates,
+    drop_null_values,
+    get_scaler,
+)
 
 
 def test_drop_null_values():

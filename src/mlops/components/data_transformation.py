@@ -1,15 +1,20 @@
 from logger.get_logger import get_logger
-from mlops.artifacts.data_transformation_artifact import \
-    DataTransformationArtifact
+from mlops.artifacts.data_transformation_artifact import DataTransformationArtifact
 from mlops.artifacts.data_validation_artifact import DataValidationArtifact
 from mlops.config.data_transformation_config import DataTransformationConfig
-from mlops.utils.common_utils import (create_directories, read_dataset,
-                                      read_yaml_file, save_file_as_csv,
-                                      write_yaml_file)
-from mlops.utils.data_transformation_utils import (drop_duplicates,
-                                                   drop_null_values,
-                                                   perform_feature_binning,
-                                                   perform_feature_scaling)
+from mlops.utils.common_utils import (
+    create_directories,
+    read_dataset,
+    read_yaml_file,
+    save_file_as_csv,
+    write_yaml_file,
+)
+from mlops.utils.data_transformation_utils import (
+    drop_duplicates,
+    drop_null_values,
+    perform_feature_binning,
+    perform_feature_scaling,
+)
 
 
 class DataTransformation:

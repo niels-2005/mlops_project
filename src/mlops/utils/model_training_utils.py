@@ -1,7 +1,6 @@
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.metrics import fbeta_score, make_scorer
-from sklearn.model_selection import (RandomizedSearchCV,
-                                     TunedThresholdClassifierCV)
+from sklearn.model_selection import RandomizedSearchCV, TunedThresholdClassifierCV
 from sklearn.pipeline import Pipeline
 
 from logger.get_logger import get_logger

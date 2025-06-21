@@ -12,6 +12,8 @@ prediction_service = PredictionService()
 
 role_checker = RoleChecker(["admin", "user"])
 
+prediction_pipeline = None
+
 
 @prediction_router.post(
     "/", response_model=PredictionResponseData, status_code=status.HTTP_200_OK
@@ -22,8 +24,10 @@ async def make_prediction(
     role_checker: bool = Depends(role_checker),
     token_details: dict = Depends(AccessTokenBearer()),
 ) -> PredictionResponseData:
-    pipeline = load_pipeline()
+    global prediction_pipeline
+    if prediction_pipeline is None:
+        prediction_pipeline = load_pipeline()
     output, output_proba = await prediction_service.get_prediction(
-        pipeline, prediction_input, session
+        prediction_pipeline, prediction_input, session
     )
     return PredictionResponseData(output=output, output_proba=output_proba)

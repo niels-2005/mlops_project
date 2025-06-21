@@ -1,7 +1,4 @@
-# Frontend machen + Backend verbinden 
-
-wennn alles funnzt dann docker compose und ordentlichj machen.
-
+ABSCHLUSSBERICH ANFANGEN.
 
 
 kill $(lsof -t -i:8000)

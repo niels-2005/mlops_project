@@ -12,7 +12,7 @@ def load_pipeline(
         raise e
 
 
-def read_yaml_file(
+def load_threshold(
     file_path: str = "mlops_artifacts/best_run/best_model_summary.yaml",
 ) -> float:
     try:
