@@ -118,7 +118,11 @@ def evaluate_single_model(
         y_pred = estimator.predict(X_test)
         y_proba = estimator.predict_proba(X_test)[:, 1]
         y_pred_threshold = (y_proba >= threshold).astype(int)
-        mlflow.set_tracking_uri("http://mlflow:5000")
+
+        eval_metrics = {}
+
+        # mlflow.set_tracking_uri("http://mlflow:5000")
+        mlflow.set_tracking_uri("http://127.0.0.1:5000/")
         mlflow.set_experiment(timestamp)
         with mlflow.start_run(run_name=model_name):
             logger.info(
@@ -127,27 +131,21 @@ def evaluate_single_model(
 
             mlflow.log_param("threshold", threshold)
 
-            eval_metrics = {
-                "roc_auc": float(roc_auc_score(y_test, y_proba)),
-            }
+            if metrics_to_compute_schema["roc_auc"]:
+                eval_metrics["roc_auc"] = float(roc_auc_score(y_test, y_proba))
 
-            if metrics_to_compute_schema["f2_score"]:
-                eval_metrics["f2_score"] = fbeta_score(y_test, y_pred, beta=2)
-                eval_metrics["f2_score_threshold"] = fbeta_score(
-                    y_test, y_pred_threshold, beta=2
-                )
+            eval_metrics["f2_score"] = fbeta_score(y_test, y_pred, beta=2)
+            eval_metrics["f2_score_threshold"] = fbeta_score(
+                y_test, y_pred_threshold, beta=2
+            )
 
-            if metrics_to_compute_schema["recall"]:
-                eval_metrics["recall"] = recall_score(y_test, y_pred)
-                eval_metrics["recall_threshold"] = recall_score(
-                    y_test, y_pred_threshold
-                )
+            eval_metrics["recall"] = recall_score(y_test, y_pred)
+            eval_metrics["recall_threshold"] = recall_score(y_test, y_pred_threshold)
 
-            if metrics_to_compute_schema["precision"]:
-                eval_metrics["precision"] = precision_score(y_test, y_pred)
-                eval_metrics["precision_threshold"] = precision_score(
-                    y_test, y_pred_threshold
-                )
+            eval_metrics["precision"] = precision_score(y_test, y_pred)
+            eval_metrics["precision_threshold"] = precision_score(
+                y_test, y_pred_threshold
+            )
 
             mlflow.log_metrics(eval_metrics)
 
@@ -209,6 +207,7 @@ def update_best_model(eval_metrics, best_model_data, threshold):
                         "f2_score": f2_with_threshold,
                         "recall": eval_metrics["recall_threshold"],
                         "precision": eval_metrics["precision_threshold"],
+                        "roc_auc": eval_metrics["roc_auc"],
                         "estimator": eval_metrics["estimator"],
                         "model_name": eval_metrics["model_name"],
                         "threshold": float(threshold),
@@ -221,6 +220,7 @@ def update_best_model(eval_metrics, best_model_data, threshold):
                         "f2_score": f2_without_threshold,
                         "recall": eval_metrics["recall"],
                         "precision": eval_metrics["precision"],
+                        "roc_auc": eval_metrics["roc_auc"],
                         "estimator": eval_metrics["estimator"],
                         "model_name": eval_metrics["model_name"],
                         "threshold": 0.5,
@@ -316,6 +316,7 @@ def find_best_model_data(
             "f2_score": 0,
             "recall": 0,
             "precision": 0,
+            "roc_auc": 0,
             "estimator": None,
             "model_name": None,
             "threshold": 0.5,

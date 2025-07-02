@@ -74,23 +74,21 @@ class DataTransformation:
                 train_df = drop_duplicates(train_df, split="train")
                 test_df = drop_duplicates(test_df, split="test")
 
-            if self.feature_binning_schema["enabled"]:
-                train_df, test_df = perform_feature_binning(
-                    list(self.feature_binning_schema["columns"]),
-                    train_df,
-                    test_df,
-                    self.config.feature_binning_artifact_path,
-                    self.config.feature_binning_inference_path,
-                )
+            train_df, test_df = perform_feature_binning(
+                list(self.feature_binning_schema["columns"]),
+                train_df,
+                test_df,
+                self.config.feature_binning_artifact_path,
+                self.config.feature_binning_inference_path,
+            )
 
-            if self.feature_scaling_schema["enabled"]:
-                train_df, test_df = perform_feature_scaling(
-                    self.feature_scaling_schema,
-                    train_df,
-                    test_df,
-                    self.config.scaler_artifact_path,
-                    self.config.scaler_inference_path,
-                )
+            train_df, test_df = perform_feature_scaling(
+                self.feature_scaling_schema,
+                train_df,
+                test_df,
+                self.config.scaler_artifact_path,
+                self.config.scaler_inference_path,
+            )
 
             save_file_as_csv(train_df, self.config.transformed_train_path)
             save_file_as_csv(test_df, self.config.transformed_test_path)

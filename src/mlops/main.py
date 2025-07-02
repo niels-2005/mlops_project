@@ -15,7 +15,8 @@ from mlops.config.model_training_config import ModelTrainingConfig
 logger = get_logger()
 
 
-async def run_mlops_pipeline():
+# AWAIT HERE.
+def run_mlops_pipeline():
     """
     Runs the entire MLOps pipeline asynchronously, including data ingestion, validation,
     transformation, training, evaluation, and best model selection.
@@ -59,5 +60,5 @@ async def run_mlops_pipeline():
         raise e
 
 
-# if __name__ == "__main__":
-#     run_mlops_pipeline()
+if __name__ == "__main__":
+    run_mlops_pipeline()

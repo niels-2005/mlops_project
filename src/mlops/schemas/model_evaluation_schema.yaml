@@ -1,5 +1,3 @@
 metrics_to_compute:
-  f2_score: true
-  recall: true
-  precision: true
+  roc_auc: true
   confusion_matrix: true

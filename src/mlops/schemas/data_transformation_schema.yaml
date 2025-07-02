@@ -2,7 +2,6 @@ drop_null_values: true
 remove_duplicates: true
 
 feature_scaling:
-  enabled: true
   scaler_name_options: ["standard_scaler", "min_max_scaler", "robust_scaler"]
   scaler_name: "standard_scaler"
   columns_to_scale:
@@ -12,7 +11,6 @@ feature_scaling:
     - oldpeak
 
 feature_binning:
-  enabled: true
   columns:
     - column: "age"
       bins: [0, 40, 50, 60, 80]
