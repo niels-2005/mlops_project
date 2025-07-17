@@ -21,10 +21,6 @@ class ModelEvaluation:
         """
         Initialize ModelEvaluation with training artifact and config.
         Create required directories and load schema.
-
-        Args:
-            model_training_artifact (ModelTrainingArtifact): Trained models and test data paths.
-            config (ModelEvaluationConfig): Configuration for evaluation.
         """
         self.model_training_artifact = model_training_artifact
         self.config = config
@@ -48,17 +44,7 @@ class ModelEvaluation:
 
     def run_model_evaluation(self):
         """
-        Run model evaluation:
-        - read transformed test data
-        - split features and target
-        - evaluate models with thresholds and metrics
-        - return evaluation artifact with best scores
-
-        Returns:
-            ModelEvaluationArtifact: Contains best scores (F2, recall, precision).
-
-        Raises:
-            Exception: For errors during evaluation.
+        Run model evaluation
         """
         try:
             self.logger.info("Model Evaluation started.")

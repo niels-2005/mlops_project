@@ -8,13 +8,13 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
 
-# Navigation: Seitenwechsel
+# switch pages
 def navigate_to(page):
     st.session_state.page = page
     st.rerun()
 
 
-# Hauptseite
+# main page (first page)
 def main_page():
     st.title("Willkommen zur Gesundheits-App")
     st.subheader("Bitte anmelden oder registrieren")
@@ -27,7 +27,7 @@ def main_page():
             navigate_to("signup")
 
 
-# Signup-Seite
+# Signup page
 def signup_page():
     st.title("Registrieren")
 
@@ -38,7 +38,7 @@ def signup_page():
     password = st.text_input("Passwort (mind. 6 Zeichen)", type="password")
 
     if st.button("Registrieren"):
-        # Eingaben prüfen
+        # Echeck values
         if not any([username, first_name, last_name, email]):
             st.warning("Bitte alle Felder ausfüllen.")
             return
@@ -55,15 +55,18 @@ def signup_page():
             "password": password,
         }
 
+        # try to signup user
         try:
             response = requests.post(
                 "http://backend:8000/api/v1/auth/signup", json=payload
             )
 
+            # user registered successful
             if response.status_code == 201:
                 st.success("Registrierung erfolgreich!")
                 navigate_to("login")
 
+            # user already exists
             elif response.status_code == 403:
                 detail = response.json().get("detail", "")
                 if "email" in detail.lower():
@@ -81,14 +84,15 @@ def signup_page():
         navigate_to("main")
 
 
-# Login-Seite
+# Login page
 def login_page():
     st.title("Login")
 
     email = st.text_input("Email")
-    password = st.text_input("Passwort", type="password")
+    password = st.text_input("Passwort (mind. 6 Zeichen)", type="password")
 
     if st.button("Anmelden"):
+        # check values
         if not email or not password:
             st.warning("Bitte E-Mail und Passwort eingeben.")
             return
@@ -99,6 +103,7 @@ def login_page():
 
         payload = {"email": email, "password": password}
 
+        # try login api request with given email and password
         try:
             response = requests.post(
                 "http://backend:8000/api/v1/auth/login", json=payload
@@ -116,6 +121,7 @@ def login_page():
 
                 navigate_to("prediction")
 
+            # invalid email or password
             elif response.status_code == 403:
                 detail = response.json().get("detail", "")
                 if "invalid" in detail.lower():
@@ -190,7 +196,7 @@ def prediction_page():
     st_slope = int(slope_label.split("(")[-1][0])
 
     if st.button("Vorhersagen"):
-        # Check auf ungültige Werte (0 nicht erlaubt bei bestimmten Feldern)
+        # check if values are given
         if age == 0:
             st.warning("Bitte geben Sie ein gültiges Alter ein (nicht 0).")
         elif resting_bp_s == 0:
@@ -220,6 +226,7 @@ def prediction_page():
 
             headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
 
+            # api request to use model with given inputs
             try:
                 response = requests.post(
                     "http://backend:8000/api/v1/predict/",
@@ -232,6 +239,7 @@ def prediction_page():
                     output = result["output"]
                     output_proba = result["output_proba"]
 
+                    # check if heart failure or not predicted
                     if output == 1:
                         st.error(
                             f"Herzkrankheit vorhergesagt, Wahrscheinlichkeit: {output_proba:.2f}"
@@ -246,9 +254,11 @@ def prediction_page():
             except requests.exceptions.RequestException as e:
                 st.error(f"Netzwerkfehler: {e}")
 
+    # logout button
     if st.button("Logout"):
         headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
 
+        # api request to block token in backend
         try:
             response = requests.post(
                 "http://backend:8000/api/v1/auth/logout", headers=headers
@@ -262,7 +272,7 @@ def prediction_page():
         except requests.exceptions.RequestException as e:
             st.error(f"Netzwerkfehler beim Logout: {e}")
 
-        # Session-Daten löschen, egal ob API-Aufruf erfolgreich war oder nicht
+        # delete session state, regardless if logout was successful.
         st.session_state.logged_in = False
         for key in ["access_token", "refresh_token", "username", "uid"]:
             if key in st.session_state:
@@ -270,7 +280,7 @@ def prediction_page():
         navigate_to("main")
 
 
-# Router
+# page routers
 if st.session_state.page == "main":
     main_page()
 elif st.session_state.page == "signup":

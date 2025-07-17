@@ -16,13 +16,10 @@ logger = get_logger()
 
 
 # AWAIT HERE.
-def run_mlops_pipeline():
+async def run_mlops_pipeline():
     """
     Runs the entire MLOps pipeline asynchronously, including data ingestion, validation,
     transformation, training, evaluation, and best model selection.
-
-    Raises:
-        Exception: Propagates exceptions during pipeline execution.
     """
     try:
         logger.info("Starting MLOps Pipeline")
@@ -58,7 +55,3 @@ def run_mlops_pipeline():
     except Exception as e:
         logger.error(f"Error while running Pipeline: {e}")
         raise e
-
-
-if __name__ == "__main__":
-    run_mlops_pipeline()

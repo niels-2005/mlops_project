@@ -14,10 +14,6 @@ class BestModelSelector:
     ):
         """
         Initialize BestModelSelector with evaluation results and config.
-
-        Args:
-            model_evaluation_artifact (ModelEvaluationArtifact): Evaluation scores of the current model.
-            config (BestModelSelectorConfig): Configuration for model promotion and paths.
         """
         self.model_evaluation_artifact = model_evaluation_artifact
         self.config = config
@@ -43,13 +39,7 @@ class BestModelSelector:
 
     def run_best_model_selector(self):
         """
-        Run the best model selection process:
-        - If no previous best model exists, promote current model.
-        - Else, compare current model with best model.
-        - Promote current model if it outperforms the best.
-
-        Raises:
-            Exception: If any error occurs during model selection.
+        Run the best model selection process
         """
         try:
             self.logger.info("Best Model Selection started.")
@@ -57,6 +47,11 @@ class BestModelSelector:
                 promote_run(
                     is_first_run=True, promote_run_config=self.promote_run_config
                 )
+                print("PIPELINE READY")
+                print("PIPELINE READY")
+                print("PIPELINE READY")
+                print("PIPELINE READY")
+                print("PIPELINE READY")
             else:
                 new_champion = compare_models(
                     self.config.best_model_summary_path,
@@ -69,6 +64,12 @@ class BestModelSelector:
                     promote_run(
                         is_first_run=False, promote_run_config=self.promote_run_config
                     )
+                    print("PIPELINE READY")
+                    print("PIPELINE READY")
+                    print("PIPELINE READY")
+                    print("PIPELINE READY")
+                    print("PIPELINE READY")
+                    print("PIPELINE READY")
         except Exception as e:
             self.logger.exception(
                 f"Error occured while running best model selection: {e}"

@@ -17,18 +17,6 @@ def get_pipeline(
 ):
     """
     Loads and reconstructs a machine learning pipeline from serialized pickle files.
-
-    Args:
-        feature_binning_pkl_path (str): Path to saved feature binning object.
-        scaler_pkl_path (str): Path to saved scaler object.
-        feature_selector_pkl_path (str): Path to saved feature selector object.
-        classifier_pkl_path (str): Path to saved classifier object.
-
-    Returns:
-        sklearn.pipeline.Pipeline: Reconstructed pipeline.
-
-    Raises:
-        Exception: Propagates exceptions during loading.
     """
     try:
         logger.info("Loading pipeline steps from pickle files.")
@@ -48,13 +36,6 @@ def get_pipeline(
 def save_pipeline(pipeline, pipeline_pkl_path):
     """
     Saves the given pipeline object to disk as a pickle file.
-
-    Args:
-        pipeline (sklearn.pipeline.Pipeline): Pipeline object to save.
-        pipeline_pkl_path (str): Path to save the pipeline pickle file.
-
-    Raises:
-        Exception: Propagates exceptions during saving.
     """
     try:
         logger.info(f"Saving pipeline to {pipeline_pkl_path}")
@@ -75,18 +56,6 @@ def register_model(
 ):
     """
     Registers a trained pipeline model in MLflow with metrics logged.
-
-    Args:
-        pipeline (sklearn.pipeline.Pipeline): The trained pipeline to register.
-        mlflow_uri (str): URI of the MLflow tracking server.
-        timestamp (str): Timestamp for the run name.
-        registered_model_name (str): Name for the registered model in MLflow.
-        best_f2_score (float): Best F2 score to log.
-        best_recall_score (float): Best recall score to log.
-        best_precision_score (float): Best precision score to log.
-
-    Raises:
-        Exception: Propagates exceptions during MLflow registration.
     """
     try:
         logger.info(f"Registering model {registered_model_name} in MLflow.")
@@ -111,13 +80,6 @@ def promote_run(is_first_run: bool, promote_run_config: dict[str, any]):
     """
     Promotes the current run by saving the pipeline, copying artifacts to the best run directory,
     and registering the model in MLflow.
-
-    Args:
-        is_first_run (bool): Flag indicating if this is the first run.
-        promote_run_config (dict): Configuration dictionary with paths and URIs for promotion.
-
-    Raises:
-        Exception: Propagates exceptions during promotion.
     """
     try:
         logger.info("Promoting run and saving pipeline.")
@@ -161,18 +123,6 @@ def compare_models(
     """
     Compares challenger model metrics against the current best model metrics to decide
     if the challenger is better.
-
-    Args:
-        best_model_summary_path (str): Path to YAML file with best model summary.
-        f2_challenger_score (float): Challenger model's F2 score.
-        recall_challenger_score (float): Challenger model's recall score.
-        precision_challenger_score (float): Challenger model's precision score.
-
-    Returns:
-        bool: True if challenger outperforms the champion, else False.
-
-    Raises:
-        Exception: Propagates exceptions during comparison.
     """
     try:
         best_model_summary = read_yaml_file(best_model_summary_path)[

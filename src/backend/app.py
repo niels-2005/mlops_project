@@ -15,6 +15,13 @@ from .prediction.routes import prediction_router
 async def lifespan(app: FastAPI):
     await run_mlops_pipeline()
     await init_db()
+    print("PIPELINE READY")
+    print("PIPELINE READY")
+    print("PIPELINE READY")
+    print("PIPELINE READY")
+    print("PIPELINE READY")
+    print("PIPELINE READY")
+    print("PIPELINE READY")
     yield
 
 

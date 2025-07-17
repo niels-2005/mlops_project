@@ -29,10 +29,6 @@ class ModelTraining:
         Initialize ModelTraining with transformation artifact and config.
         Create required directories and load schema.
         Initialize models.
-
-        Args:
-            data_transformation_artifact (DataTransformationArtifact): Paths of transformed data.
-            config (ModelTrainingConfig): Configuration for training.
         """
         self.data_transformation_artifact = data_transformation_artifact
         self.config = config
@@ -65,17 +61,7 @@ class ModelTraining:
 
     def run_model_training(self):
         """
-        Run model training:
-        - read transformed train data
-        - split features and target
-        - train models using configurations
-        - return best estimators and thresholds in artifact
-
-        Returns:
-            ModelTrainingArtifact: Contains paths and trained model details.
-
-        Raises:
-            Exception: For errors during training.
+        Run model training
         """
         try:
             self.logger.info("Starting model training...")

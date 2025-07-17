@@ -12,14 +12,6 @@ logger = get_logger()
 def save_estimator_objects(best_estimator, training_paths: dict):
     """
     Save the estimator pipeline and its components (feature selector and classifier) to disk.
-
-    Args:
-        best_estimator (Pipeline): The trained sklearn pipeline estimator.
-        training_paths (dict): Dictionary containing file paths for saving objects, keys include
-                               'estimator_pkl_path', 'feature_selector_pkl_path', and 'model_pkl_path'.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during the saving process.
     """
     try:
         logger.info(f"Saving estimator objects to {training_paths}")
@@ -41,15 +33,6 @@ def save_estimator_objects(best_estimator, training_paths: dict):
 def get_sklearn_estimator(model) -> Pipeline:
     """
     Create a sklearn Pipeline consisting of a feature selector and a classifier.
-
-    Args:
-        model: The sklearn classifier model to use as the final estimator step.
-
-    Returns:
-        Pipeline: sklearn pipeline with 'feature_selector' and 'classifier' steps.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during pipeline creation.
     """
     try:
         logger.info("Getting sklearn estimator")
@@ -62,15 +45,6 @@ def get_sklearn_estimator(model) -> Pipeline:
 def get_model_param_distributions(model_param_distributions_schema):
     """
     Prefix model parameter distribution keys with 'classifier__' for sklearn pipeline search.
-
-    Args:
-        model_param_distributions_schema (dict): Parameter distributions for the classifier.
-
-    Returns:
-        dict: Parameter distributions with keys prefixed by 'classifier__'.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during processing.
     """
     try:
         logger.info("Getting model param distributions")
@@ -85,16 +59,6 @@ def get_model_param_distributions(model_param_distributions_schema):
 def get_param_distributions(model_param_distributions_schema, feature_selection_schema):
     """
     Combine feature selector parameter distributions with model classifier parameter distributions.
-
-    Args:
-        model_param_distributions_schema (dict): Classifier parameter distributions.
-        feature_selection_schema (dict): Feature selector parameter distributions.
-
-    Returns:
-        dict: Combined parameter distributions for randomized search.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during processing.
     """
     try:
         logger.info("Getting randomized search param distributions")
@@ -116,15 +80,6 @@ def get_param_distributions(model_param_distributions_schema, feature_selection_
 def get_scoring_function(beta):
     """
     Create a sklearn scorer for the F-beta score with the specified beta.
-
-    Args:
-        beta (float): Beta parameter for the F-beta score.
-
-    Returns:
-        callable: Scorer function compatible with sklearn.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during scorer creation.
     """
     try:
         logger.info(f"Getting fbeta scoring function with beta={beta}")
@@ -140,20 +95,6 @@ def perform_hyperparameter_tuning(
 ):
     """
     Perform randomized hyperparameter tuning using RandomizedSearchCV.
-
-    Args:
-        random_search_schema (dict): Configuration schema for randomized search.
-        estimator (Pipeline): Estimator pipeline to tune.
-        param_distributions (dict): Parameter distributions to sample.
-        X_train (pd.DataFrame): Training features.
-        y_train (pd.Series or np.ndarray): Training labels.
-        seed (int): Random seed for reproducibility.
-
-    Returns:
-        RandomizedSearchCV: Fitted randomized search object.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during hyperparameter tuning.
     """
     try:
         logger.info("Performing hyperparameter tuning")
@@ -178,19 +119,6 @@ def perform_threshold_tuning(
 ):
     """
     Tune classification threshold to optimize the F-beta score using cross-validation.
-
-    Args:
-        threshold_tuning_schema (dict): Configuration for threshold tuning.
-        estimator (Pipeline): Estimator pipeline to tune threshold for.
-        X_train (pd.DataFrame): Training features.
-        y_train (pd.Series or np.ndarray): Training labels.
-        seed (int): Random seed for reproducibility.
-
-    Returns:
-        float: Best threshold found.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during threshold tuning.
     """
     try:
         logger.info("Performing threshold tuning")
@@ -212,16 +140,6 @@ def perform_threshold_tuning(
 def get_training_save_paths(config, model_dir):
     """
     Construct absolute paths for saving training artifacts based on model directory and config.
-
-    Args:
-        config: Configuration object containing relative paths.
-        model_dir (str): Base directory for model artifacts.
-
-    Returns:
-        dict: Paths for saving estimator, feature selector, classifier, and tuning summary.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during path construction.
     """
     try:
         logger.info(f"Getting training save paths for model_dir: {model_dir}")
@@ -241,15 +159,6 @@ def get_training_save_paths(config, model_dir):
 def get_best_params(random_search: RandomizedSearchCV):
     """
     Extract best parameters from fitted RandomizedSearchCV, formatting feature selector score_func.
-
-    Args:
-        random_search (RandomizedSearchCV): Fitted randomized search object.
-
-    Returns:
-        dict: Best parameters with 'feature_selector__score_func' as function name.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during extraction.
     """
     try:
         logger.info("Getting best parameters from RandomizedSearchCV")
@@ -264,16 +173,6 @@ def get_best_params(random_search: RandomizedSearchCV):
 def get_selected_features(random_search: RandomizedSearchCV, X_train):
     """
     Retrieve the list of selected feature names from the best estimator's feature selector.
-
-    Args:
-        random_search (RandomizedSearchCV): Fitted randomized search object.
-        X_train (pd.DataFrame): Training data features.
-
-    Returns:
-        list: List of selected feature names.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during retrieval.
     """
     try:
         logger.info("Getting selected features from feature selector")
@@ -290,15 +189,6 @@ def save_tuning_summary(
 ) -> None:
     """
     Save a YAML file summarizing hyperparameter tuning results and selected features.
-
-    Args:
-        random_search (RandomizedSearchCV): Fitted randomized search object.
-        best_threshold (float): Best classification threshold.
-        X_train (pd.DataFrame): Training features.
-        save_path (str): File path to save tuning summary YAML.
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during saving.
     """
     try:
         logger.info(f"Saving tuning summary to {save_path}")
@@ -333,23 +223,6 @@ def get_training_results(
 ):
     """
     Train models, perform hyperparameter and threshold tuning, save artifacts and tuning summaries.
-
-    Args:
-        X_train (pd.DataFrame): Training features.
-        y_train (pd.Series or np.ndarray): Training labels.
-        models (dict): Dictionary of model name to sklearn estimator.
-        models_schema (dict): Schema containing parameter distributions per model.
-        feature_selection_schema (dict): Schema for feature selector parameters.
-        random_search_schema (dict): Configuration for randomized hyperparameter search.
-        threshold_tuning_schema (dict): Configuration for threshold tuning.
-        config: Configuration object containing paths and seed.
-
-    Returns:
-        tuple: Two dicts: best_estimators (model_name -> fitted estimator),
-                          best_thresholds (model_name -> best threshold).
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during training.
     """
     try:
         best_estimators = {}

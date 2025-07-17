@@ -11,17 +11,6 @@ def perform_train_test_split(
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Split dataframe into train and test sets.
-
-    Args:
-        df (pd.DataFrame): Input dataset.
-        train_test_split_ratio (float): Proportion of test set.
-        seed (int): Random seed for reproducibility.
-
-    Returns:
-        tuple[pd.DataFrame, pd.DataFrame]: Train and test dataframes.
-
-    Raises:
-        Exception: If splitting fails.
     """
     try:
         train_df, test_df = train_test_split(

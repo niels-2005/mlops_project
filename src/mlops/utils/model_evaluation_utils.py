@@ -28,18 +28,6 @@ def make_confusion_matrix(
 ) -> None:
     """
     Plot and save a confusion matrix image.
-
-    Args:
-        y_true (np.ndarray): True labels.
-        y_pred (np.ndarray): Predicted labels.
-        save_path (str): File path to save the confusion matrix image.
-        classes (np.ndarray, optional): Class names or labels. Defaults to None.
-        figsize (tuple[int, int], optional): Figure size. Defaults to (10, 10).
-        text_size (int, optional): Font size of text in matrix. Defaults to 15.
-        cmap (str, optional): Colormap to use. Defaults to "Blues".
-
-    Raises:
-        Exception: Logs and re-raises any exceptions during plotting or saving.
     """
     try:
         logger.info("Creating confusion matrix plot")
@@ -95,22 +83,6 @@ def evaluate_single_model(
     """
     Evaluates a single model on the test data, computes specified metrics,
     logs results and artifacts to MLflow, and returns the evaluation metrics.
-
-    Args:
-        timestamp (str): Timestamp for experiment naming.
-        metrics_to_compute_schema (dict): Dictionary specifying which metrics to compute.
-        estimator (sklearn estimator): Trained model to evaluate.
-        X_test (array-like): Test features.
-        y_test (array-like): True labels for the test set.
-        threshold (float): Threshold to convert probabilities to binary predictions.
-        model_dir (str): Directory to save evaluation artifacts.
-        model_name (str): Name identifier of the model.
-
-    Returns:
-        dict: Dictionary containing evaluation metrics and model info.
-
-    Raises:
-        Exception: Propagates exceptions encountered during evaluation.
     """
     try:
         logger.info(f"Evaluating model: {model_name}")
@@ -121,8 +93,8 @@ def evaluate_single_model(
 
         eval_metrics = {}
 
-        # mlflow.set_tracking_uri("http://mlflow:5000")
-        mlflow.set_tracking_uri("http://127.0.0.1:5000/")
+        mlflow.set_tracking_uri("http://mlflow:5000")
+        # mlflow.set_tracking_uri("http://127.0.0.1:5000/")
         mlflow.set_experiment(timestamp)
         with mlflow.start_run(run_name=model_name):
             logger.info(
@@ -182,17 +154,6 @@ def update_best_model(eval_metrics, best_model_data, threshold):
     """
     Updates the record of the best model based on F2 scores, comparing thresholded
     and default predictions, and updates the best model data accordingly.
-
-    Args:
-        eval_metrics (dict): Evaluation metrics of the current model.
-        best_model_data (dict): Current best model data to update.
-        threshold (float): Threshold used for prediction conversion.
-
-    Returns:
-        dict: Updated best model data.
-
-    Raises:
-        Exception: Propagates exceptions encountered during update.
     """
     try:
         logger.info("Updating best model")
@@ -236,19 +197,15 @@ def update_best_model(eval_metrics, best_model_data, threshold):
 def save_evaluation_summary(evaluation_summary_path, model_dir, metrics):
     """
     Saves the evaluation summary metrics to a YAML file at the specified path.
-
-    Args:
-        evaluation_summary_path (str): Relative path for saving the summary file.
-        model_dir (str): Directory in which to save the summary file.
-        metrics (dict): Evaluation metrics to save.
-
-    Raises:
-        Exception: Propagates exceptions encountered during saving.
     """
     try:
         logger.info(f"Saving evaluation summary to {evaluation_summary_path}")
         evaluation_summary_path = get_os_path(model_dir, evaluation_summary_path)
         del metrics["estimator"]
+
+        if "threshold" in metrics:
+            metrics["threshold"] = float(metrics["threshold"])
+
         write_yaml_file(
             evaluation_summary_path, content={"evaluation_summary": metrics}
         )
@@ -261,13 +218,6 @@ def finalize_best_model(config, best_model_data):
     """
     Finalizes the best model by saving the feature selector and classifier objects
     separately, removing the estimator from summary, and writing summary to YAML.
-
-    Args:
-        config (object): Configuration object containing paths for saving.
-        best_model_data (dict): Data and metrics of the best model.
-
-    Raises:
-        Exception: Propagates exceptions encountered during finalization.
     """
     try:
         logger.info("Finalizing best model")
@@ -295,20 +245,6 @@ def find_best_model_data(
     """
     Evaluates multiple trained models, updates and selects the best model based on
     defined metrics, saves evaluation summaries, and finalizes the best model.
-
-    Args:
-        config (object): Configuration object with paths and settings.
-        estimators (dict): Dictionary of model_name to estimator mappings.
-        metrics_to_compute_schema (dict): Which metrics to compute per model.
-        thresholds (dict): Thresholds per model for classification.
-        X_test (array-like): Test features.
-        y_test (array-like): Test labels.
-
-    Returns:
-        dict: Data and metrics of the best model selected.
-
-    Raises:
-        Exception: Propagates exceptions during the best model search process.
     """
     try:
         logger.info("Finding best model among trained estimators")
