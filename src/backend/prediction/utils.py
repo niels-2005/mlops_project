@@ -7,15 +7,6 @@ def load_pipeline(
 ):
     """
     Loads and returns a serialized ML pipeline from the specified file.
-
-    Args:
-        file_path (str): Path to the pipeline pickle file.
-
-    Returns:
-        Pipeline: Loaded machine learning pipeline object.
-
-    Raises:
-        Exception: Propagates exceptions during file read or deserialization.
     """
     try:
         with open(file_path, "rb") as file:
@@ -30,15 +21,6 @@ def load_threshold(
     """
     Loads the threshold value for classification from a YAML summary file.
     Returns default threshold 0.50 if none is specified.
-
-    Args:
-        file_path (str): Path to the YAML file with model summary.
-
-    Returns:
-        float: Threshold value for binary classification.
-
-    Raises:
-        Exception: Propagates exceptions during file read or parsing.
     """
     try:
         with open(file_path, "r") as yaml_file:

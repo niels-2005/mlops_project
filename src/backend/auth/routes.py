@@ -32,16 +32,6 @@ async def create_user_account(
 ):
     """
     Register a new user account.
-
-    Args:
-        user_data (UserCreateModel): Data required to create a user.
-        session (AsyncSession): Database session dependency.
-
-    Raises:
-        HTTPException: If user with the given email already exists.
-
-    Returns:
-        UserModel: The created user.
     """
     email = user_data.email
 
@@ -62,16 +52,6 @@ async def login_users(
 ):
     """
     Authenticate user and return access and refresh tokens on success.
-
-    Args:
-        login_data (UserLoginModel): User login credentials.
-        session (AsyncSession): Database session dependency.
-
-    Raises:
-        HTTPException: If email or password is invalid.
-
-    Returns:
-        JSONResponse: Contains access token, refresh token, and user info.
     """
     email = login_data.email
     password = login_data.password
@@ -113,12 +93,6 @@ async def login_users(
 async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
     """
     Revoke (invalidate) the current access token by adding its JTI to the blocklist.
-
-    Args:
-        token_details (dict): Decoded access token details injected by dependency.
-
-    Returns:
-        JSONResponse: Confirmation message of logout success.
     """
     jti = token_details["jti"]
 
@@ -133,15 +107,6 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
 async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer())):
     """
     Generate a new access token using a valid refresh token.
-
-    Args:
-        token_details (dict): Decoded refresh token details injected by dependency.
-
-    Raises:
-        HTTPException: If the refresh token is expired or invalid.
-
-    Returns:
-        JSONResponse: Contains the new access token.
     """
     expiry_timestamp = token_details["exp"]
 
@@ -161,12 +126,5 @@ async def get_current_user(
 ):
     """
     Retrieve the current authenticated user's information.
-
-    Args:
-        user (User): Current user injected by dependency.
-        role_checker (bool): Role-based access control check.
-
-    Returns:
-        UserModel: The current authenticated user.
     """
     return user

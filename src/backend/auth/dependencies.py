@@ -26,15 +26,6 @@ class TokenBearer(HTTPBearer):
     async def __call__(self, request: Request) -> HTTPAuthorizationCredentials | None:
         """
         Extract and decode token from request, check blocklist, and verify token data.
-
-        Args:
-            request (Request): Incoming HTTP request.
-
-        Returns:
-            dict: Decoded token data.
-
-        Raises:
-            HTTPException: If token is invalid, expired, or revoked.
         """
         creds = await super().__call__(request)
 
@@ -67,12 +58,6 @@ class TokenBearer(HTTPBearer):
     def verify_token_data(self, token_data):
         """
         Abstract method to verify token data. Must be overridden in subclasses.
-
-        Args:
-            token_data (dict): Decoded token data.
-
-        Raises:
-            NotImplementedError: If not overridden in subclass.
         """
         raise NotImplementedError("Please Override this method in child classes")
 
@@ -81,12 +66,6 @@ class AccessTokenBearer(TokenBearer):
     def verify_token_data(self, token_data: dict) -> None:
         """
         Verify token is not a refresh token.
-
-        Args:
-            token_data (dict): Decoded token data.
-
-        Raises:
-            HTTPException: If token is a refresh token.
         """
         if token_data and token_data["refresh"]:
             raise HTTPException(
@@ -99,12 +78,6 @@ class RefreshTokenBearer(TokenBearer):
     def verify_token_data(self, token_data: dict) -> None:
         """
         Verify token is a refresh token.
-
-        Args:
-            token_data (dict): Decoded token data.
-
-        Raises:
-            HTTPException: If token is not a refresh token.
         """
         if token_data and not token_data["refresh"]:
             raise HTTPException(
@@ -119,13 +92,6 @@ async def get_current_user(
 ):
     """
     Retrieve current authenticated user from token details.
-
-    Args:
-        token_details (dict): Decoded access token data.
-        session (AsyncSession): Database session.
-
-    Returns:
-        User: User instance fetched by email from the database.
     """
     user_email = token_details["user"]["email"]
     user = await user_service.get_user_by_email(user_email, session)
@@ -136,24 +102,12 @@ class RoleChecker:
     def __init__(self, allowed_roles: List[str]) -> None:
         """
         Initialize RoleChecker with allowed roles.
-
-        Args:
-            allowed_roles (List[str]): Roles permitted to access the resource.
         """
         self.allowed_roles = allowed_roles
 
     def __call__(self, current_user: User = Depends(get_current_user)) -> Any:
         """
         Check if current user's role is allowed.
-
-        Args:
-            current_user (User): Current authenticated user.
-
-        Returns:
-            bool: True if allowed.
-
-        Raises:
-            HTTPException: If user role is not allowed.
         """
         if current_user.role in self.allowed_roles:
             return True

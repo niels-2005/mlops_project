@@ -12,9 +12,6 @@ token_blocklist = aioredis.StrictRedis(
 async def add_jti_to_blocklist(jti: str) -> None:
     """
     Add a JWT ID (jti) to the Redis blocklist with expiration to revoke the token.
-
-    Args:
-        jti (str): JWT token identifier to block.
     """
     await token_blocklist.set(name=jti, value="", ex=JTI_EXPIRY)
 
@@ -22,12 +19,6 @@ async def add_jti_to_blocklist(jti: str) -> None:
 async def token_in_blocklist(jti: str) -> bool:
     """
     Check if a JWT ID (jti) is in the Redis blocklist.
-
-    Args:
-        jti (str): JWT token identifier to check.
-
-    Returns:
-        bool: True if the token is blocked, False otherwise.
     """
     jti = await token_blocklist.get(jti)
     return jti is not None
