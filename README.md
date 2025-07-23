@@ -20,8 +20,8 @@ docker compose up --build
 > Alle Komponenten (MLOps-Pipeline, Frontend, Backend, Grafana, PostgreSQL, Redis und MLflow) werden automatisch installiert und gestartet.  
 > Bitte sicherstellen , dass Sie **mindestens 7–8 GB freien Festplattenspeicher** haben.  
 > Die Services sind **voll funktionsfähig, sobald die Nachricht** `PIPELINE READY` **fünfmal** im Terminal erscheint.
-> Sobald alle Services laufen, können Sie die Web-Oberfläche verwenden, um sich zu registrieren, anzumelden und mit dem Vorhersagemodell für Herzkrankheiten zu interagieren.
-> Die Schema Dateien um den MLOps-Workflow zu konfigurieren sind unter src/mlops/schemas zu finden.
+> Sobald alle Services laufen, können Sie die Web-Oberfläche mit Streamlit verwenden.
+> Die Schema Dateien um den MLOps-Workflow zu konfigurieren sind unter `src/mlops/schemas` zu finden.
 
 4. Zugriff auf die Services über die folgenden URLs:  
 - **Streamlit UI:** [http://localhost:8501/](http://localhost:8501/)  
