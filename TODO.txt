@@ -1,9 +1,0 @@
-ABSCHLUSSBERICH ANFANGEN.
-
-
-kill $(lsof -t -i:8000)
-
-
-
-
-06_28_2025_16_08_20
